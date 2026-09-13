@@ -1,6 +1,6 @@
 # GitBot — Asistente Experto de Soporte Técnico (Git/GitHub)
 
-Proyecto para la materia **Desarrollo de Aplicaciones con IA** (26-II 56BA1A)
+Proyecto para la materia **Desarrollo de Aplicaciones con IA** 
 **Avance 1**: Diseño de Prompts, Few-Shot Prompting y Delimitadores
 
 ## Descripción
