@@ -1,0 +1,4 @@
+ragas
+langchain-groq
+pandas
+langchain-community>=0.4,<0.4.2
