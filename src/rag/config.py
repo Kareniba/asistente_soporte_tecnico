@@ -22,8 +22,11 @@ COLLECTION_NAME = "gitbot_docs"
 
 # --- Recuperación ---
 TOP_K = 4
+UMBRAL_DISTANCIA = 0.6   # si el mejor fragmento está más lejos que esto, se considera fuera del corpus
 
 # --- Generación (Groq) ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-LLM_MODEL = "llama-3.3-70b-versatile"
+LLM_MODEL = "openai/gpt-oss-120b"
 LLM_TEMPERATURE = 0.1
+LLM_MAX_TOKENS = 2000      # alto porque gpt-oss gasta tokens razonando antes de responder
+MAX_TURNOS_HISTORIAL = 6   # mensajes previos que se envían para preguntas de seguimiento # cuántos mensajes previos se envían para preguntas de seguimiento
