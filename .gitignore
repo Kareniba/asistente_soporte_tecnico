@@ -13,3 +13,6 @@ venv/
 .DS_Store
 .vscode/
 .idea/
+
+# Indice local de Chroma
+chroma_db/

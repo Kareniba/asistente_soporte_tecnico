@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GitBot | Soporte técnico</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+    <script
+        src="{{ url_for('static', filename='chat.js') }}"
+        defer
+    ></script>
+</head>
+<body>
+    <main class="app">
+        <header class="header">
+            <div class="brand">
+                <div class="brand-icon">G</div>
+                <div>
+                    <h1>GitBot</h1>
+                    <p>Asistente de soporte técnico de Git y GitHub</p>
+                </div>
+            </div>
+
+            <button id="clear-chat" class="clear-button" type="button">
+                Nueva conversación
+            </button>
+        </header>
+
+        <section class="chat-card">
+            <div class="chat-heading">
+                <div>
+                    <h2>¿En qué te puedo ayudar?</h2>
+                    <p>Pregunta sobre Git, GitHub y sus comandos.</p>
+                </div>
+                <span class="status-badge">Asistente</span>
+            </div>
+
+            <div
+                id="messages"
+                class="messages"
+                aria-live="polite"
+                aria-label="Historial de la conversación"
+            >
+                <article class="message assistant-message">
+                    <div class="message-label">GitBot</div>
+                    <div class="message-content">
+                        ¡Hola! Soy GitBot. Puedes preguntarme sobre Git y
+                        GitHub. También puedes hacer preguntas de seguimiento
+                        dentro de esta conversación.
+                    </div>
+                </article>
+            </div>
+
+            <div id="chat-status" class="chat-status" role="status"></div>
+
+            <form id="chat-form" class="chat-form">
+                <label for="question" class="sr-only">
+                    Escribe tu pregunta
+                </label>
+
+                <textarea
+                    id="question"
+                    name="question"
+                    rows="1"
+                    placeholder="Escribe tu pregunta..."
+                    maxlength="2000"
+                    required
+                ></textarea>
+
+                <button id="send-button" type="submit">
+                    Enviar
+                </button>
+            </form>
+
+            <p class="input-hint">
+                Pulsa Enter para enviar o Shift + Enter para escribir otra línea.
+            </p>
+        </section>
+
+        <footer class="footer">
+            GitBot · Asistencia técnica basada en documentación
+        </footer>
+    </main>
+</body>
+</html>
