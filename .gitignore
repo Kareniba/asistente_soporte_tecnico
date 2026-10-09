@@ -8,7 +8,6 @@ __pycache__/
 venv/
 
 # Índice local de Chroma (se regenera o se decide aparte)
-chroma_db/
 
 # Sistema / editor
 .DS_Store
