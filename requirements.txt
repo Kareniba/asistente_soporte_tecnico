@@ -1,0 +1,10 @@
+flask
+gunicorn
+chromadb
+fastembed
+groq
+pypdf
+beautifulsoup4
+python-docx
+langchain-text-splitters
+python-dotenv
