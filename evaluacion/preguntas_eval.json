@@ -1,0 +1,146 @@
+[
+  {
+    "id": 1,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "troubleshooting-ssh_error-permission-denied-publickey.md",
+    "pregunta": "Me sale Permission denied (publickey) cuando hago git push, ¿qué debo revisar?",
+    "ground_truth": "No uses sudo ni privilegios elevados con Git, conéctate como el usuario git, verifica que tu clave SSH esté cargada con `ssh-add -l`, confirma la conexión con `ssh -vT git@github.com` y asegúrate de que la clave pública esté agregada a tu cuenta de GitHub."
+  },
+  {
+    "id": 2,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "troubleshooting-ssh_deleted-or-missing-ssh-keys.md",
+    "pregunta": "¿Por qué GitHub eliminó mi clave SSH?",
+    "ground_truth": "GitHub elimina automáticamente las claves SSH inactivas, es decir, las que no se han usado en un año, como medida de seguridad. Puedes comprobarlo revisando el registro de seguridad de tu cuenta."
+  },
+  {
+    "id": 3,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "troubleshooting-ssh_using-ssh-over-the-https-port.md",
+    "pregunta": "El puerto 22 está bloqueado en mi red, ¿cómo me conecto a GitHub por SSH?",
+    "ground_truth": "Puedes probar SSH sobre el puerto HTTPS con `ssh -T -p 443 git@ssh.github.com`. Si funciona, clona el repositorio con `git clone ssh://git@ssh.github.com:443/TU-USUARIO/TU-REPOSITORIO.git`. El nombre de host para el puerto 443 es ssh.github.com, no github.com, y los servidores proxy pueden interferir."
+  },
+  {
+    "id": 4,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "troubleshooting-ssh_error-key-already-in-use.md",
+    "pregunta": "Me dice que la clave ya está en uso al agregar mi clave SSH, ¿qué significa?",
+    "ground_truth": "Significa que esa clave ya fue agregada a otra cuenta o repositorio. Para saber dónde se usa, ejecuta `ssh -T -ai ~/.ssh/id_rsa git@github.com`: el nombre de usuario de la respuesta es la cuenta a la que está asociada la clave, y si aparece algo como usuario/repo, está adjunta a un repositorio como deploy key. Para resolverlo, elimina la clave de la otra cuenta o repositorio y luego agrégala a tu cuenta."
+  },
+  {
+    "id": 5,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "troubleshooting-ssh_error-permission-to-userrepo-denied-to-userother-repo.md",
+    "pregunta": "Me aparece el error Permission to user/repo denied to user/other-repo, ¿cómo lo soluciono?",
+    "ground_truth": "Ocurre cuando se usa una deploy key que está asociada a otro repositorio. Para solucionarlo, elimina la deploy key del repositorio y agrega la clave a tu cuenta personal."
+  },
+  {
+    "id": 6,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "troubleshooting-ssh_error-host-key-verification-failed.md",
+    "pregunta": "¿Qué hago si me sale Host key verification failed?",
+    "ground_truth": "El error significa que el servidor al que te conectas presentó una clave que no coincide con las que SSH había visto antes para ese servidor. Puede pasar si el servidor cambió sus claves, y en ese caso debe existir un anuncio oficial (GitHub los publica en su blog). Puede que debas agregar las claves públicas SSH actuales de GitHub a tu archivo known_hosts. Si no encuentras una fuente oficial, lo más seguro es no conectarte y contactar a tu departamento de TI o al soporte del servidor."
+  },
+  {
+    "id": 7,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "merge-and-close-pull-requests_resolving-a-merge-conflict-on-github.md",
+    "pregunta": "¿Cómo resuelvo un conflicto de merge desde la página del pull request en GitHub?",
+    "ground_truth": "Haz clic en el botón Resolve conflicts, localiza en el editor los marcadores de conflicto (<<<<<<<, ======= y >>>>>>>), edita el archivo para decidir qué cambios conservar y elimina los marcadores. Luego haz clic en Mark as resolved, repite el proceso con cada archivo en conflicto y finaliza con Commit merge."
+  },
+  {
+    "id": 8,
+    "tipo": "dificil",
+    "en_corpus": true,
+    "documento_esperado": "merge-and-close-pull-requests_resolving-a-merge-conflict-using-the-command-line.md",
+    "pregunta": "¿Cómo resuelvo desde la línea de comandos un conflicto de merge causado por cambios en las mismas líneas?",
+    "ground_truth": "Abre la terminal o Git Bash y entra al repositorio local. Usa `git status` para ver los archivos con conflicto, ábrelos en un editor y busca el marcador `<<<<<<<`. Decide qué cambios conservar y elimina los marcadores. Después ejecuta `git add .` y confirma con `git commit -m` y un mensaje."
+  },
+  {
+    "id": 9,
+    "tipo": "dificil",
+    "en_corpus": true,
+    "documento_esperado": "merge-and-close-pull-requests_resolving-a-merge-conflict-using-the-command-line.md",
+    "pregunta": "Una rama borró un archivo que otra rama editó, ¿cómo resuelvo ese conflicto?",
+    "ground_truth": "Decide si conservar o eliminar el archivo. Para conservarlo ejecuta `git add README.md` (con el nombre del archivo); para eliminarlo ejecuta `git rm README.md`. Después confirma el cambio con `git commit` y un mensaje."
+  },
+  {
+    "id": 10,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "create-pull-requests_creating-a-pull-request.md",
+    "pregunta": "¿Cómo creo un pull request?",
+    "ground_truth": "Sube tus cambios a una rama del repositorio, elige la rama base y la rama con tus cambios, escribe un título y una descripción y haz clic en Create Pull Request."
+  },
+  {
+    "id": 11,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "create-pull-requests_requesting-a-pull-request-review.md",
+    "pregunta": "¿Qué permiso necesito para pedir una revisión de un pull request?",
+    "ground_truth": "Necesitas acceso de escritura (write) al repositorio. Puedes solicitar la revisión a una persona o a un equipo."
+  },
+  {
+    "id": 12,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "create-pull-requests_changing-the-base-branch-of-a-pull-request.md",
+    "pregunta": "¿Qué pasa si cambio la rama base de mi pull request?",
+    "ground_truth": "Algunos commits pueden desaparecer de la línea de tiempo del pull request y los comentarios de revisión pueden quedar desactualizados, porque la línea de código que comentaban puede dejar de formar parte de los cambios."
+  },
+  {
+    "id": 13,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "create-pull-requests_changing-the-stage-of-a-pull-request.md",
+    "pregunta": "¿Cómo paso un pull request de borrador a listo para revisión?",
+    "ground_truth": "Abre el pull request y haz clic en el botón Ready for review para cambiar su estado de borrador a listo para revisión."
+  },
+  {
+    "id": 14,
+    "tipo": "directa",
+    "en_corpus": true,
+    "documento_esperado": "merge-and-close-pull-requests_reverting-a-pull-request.md",
+    "pregunta": "¿Cómo revierto un pull request que ya fue fusionado?",
+    "ground_truth": "En el pull request fusionado haz clic en el botón Revert. GitHub crea un nuevo pull request que deshace los cambios del original, y lo fusionas como cualquier otro."
+  },
+  {
+    "id": 15,
+    "tipo": "fuera_corpus",
+    "en_corpus": false,
+    "documento_esperado": null,
+    "pregunta": "¿Cómo configuro GitHub Actions para correr mis tests automáticamente?",
+    "ground_truth": "No está en la base de conocimientos."
+  },
+  {
+    "id": 16,
+    "tipo": "fuera_corpus",
+    "en_corpus": false,
+    "documento_esperado": null,
+    "pregunta": "¿Cómo instalo Photoshop en mi computador?",
+    "ground_truth": "No está en la base de conocimientos."
+  },
+  {
+    "id": 17,
+    "tipo": "fuera_corpus",
+    "en_corpus": false,
+    "documento_esperado": null,
+    "pregunta": "¿Cómo me autentico en GitHub usando HTTPS y un token de acceso personal?",
+    "ground_truth": "No está en la base de conocimientos."
+  },
+  {
+    "id": 18,
+    "tipo": "fuera_corpus",
+    "en_corpus": false,
+    "documento_esperado": null,
+    "pregunta": "¿Cómo publico mi sitio web con GitHub Pages?",
+    "ground_truth": "No está en la base de conocimientos."
+  }
+]
