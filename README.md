@@ -11,8 +11,8 @@ GitBot responde en español preguntas de soporte técnico sobre **autenticación
 Privacidad: el corpus y el índice vectorial se mantienen en el proyecto (carpeta `chroma_db/`). Al modelo de lenguaje solo se le envían los fragmentos recuperados para cada consulta, nunca el corpus completo.
 
 ## Flujo RAG implementado
+<img width="2016" height="1202" alt="image" src="https://github.com/user-attachments/assets/a9919227-b282-4e4b-b632-cd1207c4e924" />
 
-![Flujo RAG](docs/diagrama_flujo_rag.png)
 
 | Etapa | Archivo | Decisión técnica |
 |---|---|---|
