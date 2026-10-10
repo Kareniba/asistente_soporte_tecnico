@@ -16,3 +16,4 @@ venv/
 
 # Indice local de Chroma
 chroma_db/
+chroma_db/
