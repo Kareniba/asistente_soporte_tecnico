@@ -8,3 +8,5 @@ beautifulsoup4
 python-docx
 langchain-text-splitters
 python-dotenv
+streamlit
+pysqlite3-binary; sys_platform == "linux"
