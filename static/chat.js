@@ -113,8 +113,7 @@ form.addEventListener("submit", async (event) => {
     statusContainer.textContent = "GitBot está preparando una respuesta...";
 
     try {
-        // CORREGIDO: Se quitó el prefijo /api para conectar con Flask correctamente
-        const response = await fetch("/chat", {
+        const response = await fetch("/api/chat", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
