@@ -1,0 +1,26 @@
+{
+  "img2_academico_p19.png": {
+    "documento": "Reglamento Académico Institucional",
+    "primer_articulo": 41,
+    "ultimo_articulo": 41,
+    "numero_paragrafos": 3,
+    "nit_institucion": "860.504.759-5",
+    "tema_principal": "Pérdida de la condición de estudiante"
+  },
+  "img3_academico_p39.png": {
+    "documento": "Reglamento Académico Institucional",
+    "primer_articulo": 88,
+    "ultimo_articulo": 88,
+    "numero_paragrafos": 0,
+    "nit_institucion": "860.504.759-5",
+    "tema_principal": "Derechos del estudiante"
+  },
+  "img5_trabajo_p47.png": {
+    "documento": "Reglamento Interno de Trabajo",
+    "primer_articulo": 83,
+    "ultimo_articulo": 85,
+    "numero_paragrafos": 4,
+    "nit_institucion": "860.504.759-5",
+    "tema_principal": "Recursos contra sanciones, cierre del proceso y reclamos"
+  }
+}

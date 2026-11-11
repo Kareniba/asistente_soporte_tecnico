@@ -1,0 +1,13 @@
+Imagen: img2_academico_p19.png
+Pregunta: Según esta página del reglamento, ¿cuáles son las causales por las que se pierde la condición de estudiante? Enuméralas.
+
+Respuesta:
+Según el **Artículo 41** del reglamento de la Fundación Universitaria Konrad Lorenz, la condición de estudiante se pierde por las siguientes causales:
+
+1.  **No renovación de matrícula:** Cuando no se haya hecho uso del derecho de renovación de la matrícula dentro de los plazos señalados por la Institución para este efecto.
+2.  **Pérdida del cupo por motivos académicos:** Cuando se haya perdido el cupo por motivos académicos, de acuerdo con lo estipulado en el presente reglamento.
+3.  **Cancelación por incumplimiento:** Cuando se le haya cancelado la matrícula por el incumplimiento de las obligaciones pecuniarias contraídas con la Institución.
+4.  **Suspensión o expulsión:** Cuando haya sido objeto de las sanciones disciplinarias de suspensión transitoria de la matrícula o haya sido expulsado.
+5.  **Incumplimiento de sanciones:** Cuando el estudiante incumpla con las sanciones disciplinarias que hubieren sido impuestas.
+6.  **Inasistencia:** Por inasistencia a las actividades académicas, sin que medie comunicación por parte del estudiante.
+7.  **Exceso de tiempo en Doctorado:** Para el caso de estudiantes del Doctorado, cuando exceda los tiempos establecidos en este Reglamento para la entrega de tesis doctoral.

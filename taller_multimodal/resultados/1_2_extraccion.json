@@ -1,0 +1,133 @@
+{
+  "filas": [
+    {
+      "imagen": "img2_academico_p19.png",
+      "campo": "documento",
+      "real": "Reglamento Académico Institucional",
+      "extraido": "Reglamento Académico Institucional",
+      "correcto": true
+    },
+    {
+      "imagen": "img2_academico_p19.png",
+      "campo": "primer_articulo",
+      "real": 41,
+      "extraido": 41,
+      "correcto": true
+    },
+    {
+      "imagen": "img2_academico_p19.png",
+      "campo": "ultimo_articulo",
+      "real": 41,
+      "extraido": 41,
+      "correcto": true
+    },
+    {
+      "imagen": "img2_academico_p19.png",
+      "campo": "numero_paragrafos",
+      "real": 3,
+      "extraido": 3,
+      "correcto": true
+    },
+    {
+      "imagen": "img2_academico_p19.png",
+      "campo": "nit_institucion",
+      "real": "860.504.759-5",
+      "extraido": "860.504.759-5",
+      "correcto": true
+    },
+    {
+      "imagen": "img2_academico_p19.png",
+      "campo": "tema_principal",
+      "real": "Pérdida de la condición de estudiante",
+      "extraido": "Pérdida de la condición de estudiante",
+      "correcto": null
+    },
+    {
+      "imagen": "img3_academico_p39.png",
+      "campo": "documento",
+      "real": "Reglamento Académico Institucional",
+      "extraido": "Reglamento Académico Institucional",
+      "correcto": true
+    },
+    {
+      "imagen": "img3_academico_p39.png",
+      "campo": "primer_articulo",
+      "real": 88,
+      "extraido": 88,
+      "correcto": true
+    },
+    {
+      "imagen": "img3_academico_p39.png",
+      "campo": "ultimo_articulo",
+      "real": 88,
+      "extraido": 88,
+      "correcto": true
+    },
+    {
+      "imagen": "img3_academico_p39.png",
+      "campo": "numero_paragrafos",
+      "real": 0,
+      "extraido": 0,
+      "correcto": true
+    },
+    {
+      "imagen": "img3_academico_p39.png",
+      "campo": "nit_institucion",
+      "real": "860.504.759-5",
+      "extraido": "860.504.759-5",
+      "correcto": true
+    },
+    {
+      "imagen": "img3_academico_p39.png",
+      "campo": "tema_principal",
+      "real": "Derechos del estudiante",
+      "extraido": "Derechos del estudiante",
+      "correcto": null
+    },
+    {
+      "imagen": "img5_trabajo_p47.png",
+      "campo": "documento",
+      "real": "Reglamento Interno de Trabajo",
+      "extraido": "Reglamento Interno de Trabajo",
+      "correcto": true
+    },
+    {
+      "imagen": "img5_trabajo_p47.png",
+      "campo": "primer_articulo",
+      "real": 83,
+      "extraido": 83,
+      "correcto": true
+    },
+    {
+      "imagen": "img5_trabajo_p47.png",
+      "campo": "ultimo_articulo",
+      "real": 85,
+      "extraido": 85,
+      "correcto": true
+    },
+    {
+      "imagen": "img5_trabajo_p47.png",
+      "campo": "numero_paragrafos",
+      "real": 4,
+      "extraido": 4,
+      "correcto": true
+    },
+    {
+      "imagen": "img5_trabajo_p47.png",
+      "campo": "nit_institucion",
+      "real": "860.504.759-5",
+      "extraido": "860.504.759-5",
+      "correcto": true
+    },
+    {
+      "imagen": "img5_trabajo_p47.png",
+      "campo": "tema_principal",
+      "real": "Recursos contra sanciones, cierre del proceso y reclamos",
+      "extraido": "Recursos, cierre de procesos y reclamaciones laborales",
+      "correcto": null
+    }
+  ],
+  "aciertos": 15,
+  "total": 15,
+  "porcentaje": 100.0
+}

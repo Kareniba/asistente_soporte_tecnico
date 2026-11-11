@@ -1,0 +1,54 @@
+Imágenes: ['img6_academico_p55.png', 'img5_trabajo_p47.png']
+Pregunta: La primera imagen es del Reglamento Académico (estudiantes) y la segunda del Reglamento Interno de Trabajo (trabajadores). Compara cómo cada uno trata las sanciones y los recursos que se pueden presentar contra ellas: instancias, plazos y diferencias principales.
+
+Respuesta:
+Basado en las imágenes proporcionadas, aquí tienes la comparación detallada de cómo cada reglamento trata las sanciones y los recursos:
+
+### 1. Reglamento Académico (Estudiantes)
+*Basado en la primera imagen (Artículos 112 y 113).*
+
+*   **Sanciones:** El texto menciona que las sanciones se notifican al estudiante. Se hace una distinción importante: contra la **amonestación verbal** no procede recurso alguno.
+*   **Recursos Disponibles:**
+    *   **Reposición:** Se presenta ante el **Consejo de Facultad/Escuela** (la misma entidad que suele imponer la sanción inicial en este contexto).
+    *   **Apelación:** Se presenta ante el **Consejo Académico**, que actúa como segunda y última instancia.
+*   **Plazos:**
+    *   El texto visible no especifica explícitamente el plazo para *presentar* el recurso en el fragmento mostrado (aunque suele ser de 5 días hábiles por norma general en estos reglamentos, no está en el recorte).
+    *   Sin embargo, sí menciona plazos para la *notificación* de las sanciones (5 días hábiles) y para la adopción de determinaciones por el Consejo de Facultad (5 días hábiles).
+*   **Características:**
+    *   El recurso de apelación puede presentarse en subsidio del de reposición o contra la respuesta de este.
+    *   El objetivo es que la decisión sea revocada, modificada o aclarada.
+
+### 2. Reglamento Interno de Trabajo (Trabajadores)
+*Basado en la segunda imagen (Artículo 83 y Parágrafos).*
+
+*   **Sanciones:** Se aplican a los trabajadores. Si el trabajador no interpone recursos, la sanción queda en firme y se notifica por escrito, dejando copia en la carpeta laboral.
+*   **Recursos Disponibles:**
+    *   **Reposición:** Se presenta ante la **Dirección de Talento Humano**.
+    *   **Apelación:** Se presenta ante la **Rectoría**, que actúa como segunda y última instancia.
+*   **Plazos:**
+    *   **Presentación:** Los recursos deben ser presentados y sustentados por escrito dentro de los **cinco (5) días hábiles** siguientes a la fecha de la notificación de la decisión.
+    *   **Firmeza:** Si no se interponen recursos, pasados los 5 días hábiles, la sanción queda en firme.
+*   **Características:**
+    *   Al resolver los recursos, en ningún caso las decisiones adoptadas podrán agravar la situación inicial del investigado (principio de *reformatio in peius* prohibida).
+    *   El recurso de apelación puede presentarse en subsidio del de reposición o contra la respuesta de este.
+    *   Existe un mecanismo de notificación con testigo si el trabajador se niega a firmar.
+
+---
+
+### Tabla Comparativa de Diferencias Principales
+
+| Aspecto | Reglamento Académico (Estudiantes) | Reglamento Interno de Trabajo (Trabajadores) |
+| :--- | :--- | :--- |
+| **Instancia de Reposición** | Consejo de Facultad/Escuela | Dirección de Talento Humano |
+| **Instancia de Apelación** | Consejo Académico (2da y última) | Rectoría (2da y última) |
+| **Plazo para Recurrir** | No visible en el fragmento (implícito por norma general, pero no explícito aquí). | **5 días hábiles** desde la notificación. |
+| **Excepciones** | La **amonestación verbal** no admite recurso. | No se mencionan excepciones de sanciones irrecurribles en este fragmento. |
+| **Protección al Sancionado** | No se menciona explícitamente en el fragmento. | Se prohíbe explícitamente que la decisión de recurso **agrave** la situación inicial. |
+| **Notificación** | Personal o por medio electrónico institucional. | Por escrito, con copia en carpeta laboral. Si se niega a firmar, se acta con testigo. |
+
+### Resumen de las Diferencias Clave:
+
+1.  **Autoridades:** Para los estudiantes, la jerarquía es Facultad -> Consejo Académico. Para los trabajadores, es Talento Humano -> Rectoría.
+2.  **Plazos:** El reglamento de trabajadores es muy explícito sobre el plazo de **5 días hábiles** para presentar el recurso. El fragmento del reglamento académico no muestra este plazo específico para la interposición, aunque sí para otras etapas del proceso.
+3.  **Sanciones Irrecurribles:** El reglamento académico excluye la "amonestación verbal" de los recursos. El reglamento laboral no muestra esta excepción en el texto visible.
+4.  **Principio de No Agravación:** El reglamento laboral incluye explícitamente la cláusula de que los recursos no pueden empeorar la sanción original. El fragmento académico no lo muestra.
