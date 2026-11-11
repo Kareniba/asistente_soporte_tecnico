@@ -1,0 +1,95 @@
+Imágenes: ['err1_conflicto_merge.png', 'err2_marcadores.png']
+Pregunta: La primera imagen muestra el resultado de ejecutar un git merge en una terminal y la segunda el contenido del archivo afectado después del merge. ¿Qué relación hay entre ambas? Explica qué significan los marcadores <<<<<<<, ======= y >>>>>>> y qué pasos debe seguir el usuario para resolver el conflicto y terminar el merge.
+
+Respuesta:
+## Relación entre ambas imágenes
+
+Ambas imágenes muestran **dos momentos consecutivos del mismo proceso de resolución de conflictos en Git**:
+
+1. **Primera imagen**: El resultado de ejecutar `git merge rama-a` en la rama `main`. Git intenta fusionar los cambios de `rama-a` en `main`, pero detecta que ambos modificaron el mismo archivo (`archivo.txt`) de forma incompatible. El merge falla automáticamente y Git deja el archivo en un estado de conflicto.
+
+2. **Segunda imagen**: El contenido de `archivo.txt` después del merge fallido. Se puede ver que el prompt ahora muestra `(main|MERGING)`, indicando que hay un merge en progreso. El archivo contiene los marcadores de conflicto que Git insertó automáticamente.
+
+---
+
+## Significado de los marcadores
+
+```
+<<<<<<< HEAD
+cambio de main
+=======
+cambio de A
+>>>>>>> rama-a
+```
+
+| Marcador | Significado |
+|----------|-------------|
+| `<<<<<<< HEAD` | **Inicio del conflicto.** Indica el comienzo de la sección en conflicto. `HEAD` representa la rama actual (en este caso, `main`). |
+| `=======` | **Separador.** Divide las dos versiones en conflicto. Lo que está arriba es la versión de la rama actual; lo que está abajo es la versión de la rama que se está fusionando. |
+| `>>>>>>> rama-a` | **Fin del conflicto.** Marca el final de la sección en conflicto. `rama-a` es la rama que se está fusionando. |
+
+En este caso concreto:
+- **Versión de `main` (HEAD):** `cambio de main`
+- **Versión de `rama-a`:** `cambio de A`
+
+Git no puede decidir automáticamente cuál de las dos versiones conservar, por lo que deja ambas en el archivo para que el usuario decida.
+
+---
+
+## Pasos para resolver el conflicto y terminar el merge
+
+### 1. Editar el archivo para resolver el conflicto
+
+Abrir `archivo.txt` en un editor y **eliminar los marcadores**, dejando solo el contenido deseado. Por ejemplo:
+
+- **Opción A** — conservar solo la versión de `main`:
+  ```
+  cambio de main
+  ```
+
+- **Opción B** — conservar solo la versión de `rama-a`:
+  ```
+  cambio de A
+  ```
+
+- **Opción C** — combinar ambas:
+  ```
+  cambio de main
+  cambio de A
+  ```
+
+### 2. Marcar el archivo como resuelto
+
+```bash
+git add archivo.txt
+```
+
+Esto indica a Git que el conflicto ha sido resuelto y el archivo está listo para ser incluido en el commit.
+
+### 3. Completar el merge con un commit
+
+```bash
+git commit
+```
+
+Git abrirá un editor con un mensaje de commit predeterminado (algo como `Merge branch 'rama-a'`). Se puede aceptar o modificar ese mensaje.
+
+### 4. Verificar el resultado
+
+```bash
+git log --oneline --graph
+```
+
+Se debería ver un commit de merge que une ambas ramas.
+
+---
+
+### Alternativa: abortar el merge
+
+Si en algún momento se decide **no** completar el merge, se puede revertir todo con:
+
+```bash
+git merge --abort
+```
+
+Esto restaura el repositorio al estado que tenía antes de ejecutar `git merge rama-a`.

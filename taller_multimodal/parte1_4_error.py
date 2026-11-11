@@ -7,11 +7,11 @@ from comun import IMAGENES, RESULTADOS, crear_cliente, preguntar
 
 CASOS = {
     # 4 imágenes: el máximo del modelo es 3 por solicitud
-    "muchas": dict(imagenes=sorted(IMAGENES.glob("img[1-4]*.png")), mime=None, modelo=None),
+    "muchas": dict(imagenes=sorted(IMAGENES.glob("err[1-4]*.png")), mime=None, modelo=None),
     # Un PNG declarado como JPEG
-    "mime": dict(imagenes=[IMAGENES / "img1_academico_p12.png"], mime="image/jpeg", modelo=None),
+    "mime": dict(imagenes=[next(IMAGENES.glob("err1*.png"))], mime="image/jpeg", modelo=None),
     # Un modelo de solo texto recibiendo una imagen
-    "sin_vision": dict(imagenes=[IMAGENES / "img1_academico_p12.png"], mime=None, modelo="llama-3.1-8b-instant"),
+    "sin_vision": dict(imagenes=[next(IMAGENES.glob("err1*.png"))], mime=None, modelo="llama-3.1-8b-instant"),
 }
 
 if __name__ == "__main__":

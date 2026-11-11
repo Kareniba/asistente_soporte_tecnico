@@ -1,11 +1,12 @@
 """1.3 Varias imágenes relacionadas en una misma solicitud (máximo 3)."""
 from comun import IMAGENES, RESULTADOS, crear_cliente, preguntar
 
-IMAGENES_ENVIADAS = [IMAGENES / "img6_academico_p55.png", IMAGENES / "img5_trabajo_p47.png"]
+IMAGENES_ENVIADAS = [next(IMAGENES.glob("err1*.png")), next(IMAGENES.glob("err2*.png"))]
 PREGUNTA = (
-    "La primera imagen es del Reglamento Académico (estudiantes) y la segunda del Reglamento "
-    "Interno de Trabajo (trabajadores). Compara cómo cada uno trata las sanciones y los recursos "
-    "que se pueden presentar contra ellas: instancias, plazos y diferencias principales."
+    "La primera imagen muestra el resultado de ejecutar un git merge en una terminal y la segunda "
+    "el contenido del archivo afectado después del merge. ¿Qué relación hay entre ambas? "
+    "Explica qué significan los marcadores <<<<<<<, ======= y >>>>>>> y qué pasos debe seguir el "
+    "usuario para resolver el conflicto y terminar el merge."
 )
 
 if __name__ == "__main__":

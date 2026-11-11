@@ -1,0 +1,133 @@
+{
+  "filas": [
+    {
+      "imagen": "err1_conflicto_merge.png",
+      "campo": "comando_ejecutado",
+      "real": "git merge rama-a",
+      "extraido": "git merge rama-a",
+      "correcto": true
+    },
+    {
+      "imagen": "err1_conflicto_merge.png",
+      "campo": "mensaje_error",
+      "real": "CONFLICT (content): Merge conflict in archivo.txt",
+      "extraido": "CONFLICT (content): Merge conflict in archivo.txt",
+      "correcto": true
+    },
+    {
+      "imagen": "err1_conflicto_merge.png",
+      "campo": "tipo_error",
+      "real": "conflicto_de_merge",
+      "extraido": "conflicto_de_merge",
+      "correcto": true
+    },
+    {
+      "imagen": "err1_conflicto_merge.png",
+      "campo": "recurso_afectado",
+      "real": "archivo.txt",
+      "extraido": "archivo.txt",
+      "correcto": true
+    },
+    {
+      "imagen": "err1_conflicto_merge.png",
+      "campo": "relacionado_con_ssh",
+      "real": false,
+      "extraido": false,
+      "correcto": true
+    },
+    {
+      "imagen": "err1_conflicto_merge.png",
+      "campo": "sugiere_solucion",
+      "real": true,
+      "extraido": true,
+      "correcto": true
+    },
+    {
+      "imagen": "err3_publickey.png",
+      "campo": "comando_ejecutado",
+      "real": "ssh -T usuario@github.com",
+      "extraido": "ssh -T usuario@github.com",
+      "correcto": true
+    },
+    {
+      "imagen": "err3_publickey.png",
+      "campo": "mensaje_error",
+      "real": "usuario@github.com: Permission denied (publickey).",
+      "extraido": "Permission denied (publickey).",
+      "correcto": true
+    },
+    {
+      "imagen": "err3_publickey.png",
+      "campo": "tipo_error",
+      "real": "autenticacion_ssh",
+      "extraido": "autenticacion_ssh",
+      "correcto": true
+    },
+    {
+      "imagen": "err3_publickey.png",
+      "campo": "recurso_afectado",
+      "real": "github.com",
+      "extraido": "github.com",
+      "correcto": true
+    },
+    {
+      "imagen": "err3_publickey.png",
+      "campo": "relacionado_con_ssh",
+      "real": true,
+      "extraido": true,
+      "correcto": true
+    },
+    {
+      "imagen": "err3_publickey.png",
+      "campo": "sugiere_solucion",
+      "real": false,
+      "extraido": false,
+      "correcto": true
+    },
+    {
+      "imagen": "err4_push.png",
+      "campo": "comando_ejecutado",
+      "real": "git push",
+      "extraido": "git push",
+      "correcto": true
+    },
+    {
+      "imagen": "err4_push.png",
+      "campo": "mensaje_error",
+      "real": "fatal: No configured push destination.",
+      "extraido": "fatal: No configured push destination.",
+      "correcto": true
+    },
+    {
+      "imagen": "err4_push.png",
+      "campo": "tipo_error",
+      "real": "remoto_no_configurado",
+      "extraido": "remoto_no_configurado",
+      "correcto": true
+    },
+    {
+      "imagen": "err4_push.png",
+      "campo": "recurso_afectado",
+      "real": null,
+      "extraido": null,
+      "correcto": true
+    },
+    {
+      "imagen": "err4_push.png",
+      "campo": "relacionado_con_ssh",
+      "real": false,
+      "extraido": false,
+      "correcto": true
+    },
+    {
+      "imagen": "err4_push.png",
+      "campo": "sugiere_solucion",
+      "real": true,
+      "extraido": true,
+      "correcto": true
+    }
+  ],
+  "aciertos": 18,
+  "total": 18,
+  "porcentaje": 100.0
+}

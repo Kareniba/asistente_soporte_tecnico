@@ -1,12 +1,22 @@
 [
   {
     "audio": "audio1_nombre_sinruido.m4a.m4a",
-    "duracion_s": 18.005311488,
-    "transcripcion": "Quisiera saber cuáles son las causales por las que un estudiante pierde su condición de estudiante según el reglamento académico. Por ejemplo, si no renova la matrícula a tiempo, si pierde el cupo por motivos académicos o si incumple las sanciones disciplinarias que le hayan impuesto."
+    "duracion_s": 16.32,
+    "transcripcion": "Me aparece el error PermissionDeniedPulletK cuando hago GitPash. ¿Qué debo revisar? Necesito saber cómo verifico que mi clave SSH esté cargada con SSHAD y cómo confirmo la conexión con Github desde la terminal."
   },
   {
     "audio": "audio2_nombre_conruido.m4a.m4a",
-    "duracion_s": 19.669313536,
-    "transcripcion": "En el reglamento interno de trabajo que recursos de reposición y apelación proceden contra una sanción disciplinaria, necesito saber ante qué distancia se presencia cada uno, cuál es el plazo en días hábiles y si la apelación puede presentarse en subsidio de la reposición."
+    "duracion_s": 15.146687488,
+    "transcripcion": "El puerto 22 está bloqueado en mi red y no puedo conectarme a Dithack por CCH. Como hago la conexión usando el puerto 443 y que nombre de host debo usar al gronal repositorio."
+  },
+  {
+    "audio": "audio3_nombre_sinruido.m4a.mp4",
+    "duracion_s": 15.530687488,
+    "transcripcion": "Al hacer merge me salió un conflicto en un archivo. ¿Cómo resuelvo un conflicto de merge desde la línea de comandos? Quiero entender qué significan los marcadores de conflicto y cómo entender la función con git add y git commit."
+  },
+  {
+    "audio": "audio4_nombre_sinruido.m4a.mp4",
+    "duracion_s": 13.056,
+    "transcripcion": "Estoy trabajando con Github y necesito saber cómo cambio la rama de un pull request después de haberlo creado. Y si ya tiene comentarios de revisión, ¿qué pasaría con ellos?"
   }
 ]

@@ -1,0 +1,64 @@
+Imagen: err1_conflicto_merge.png
+Pregunta: Un usuario le envía a un asistente de soporte técnico de Git esta captura de su terminal. ¿Qué error muestra, qué significa y qué debería hacer para resolverlo? Responde en español con pasos numerados y deja los comandos tal como aparecen.
+
+Respuesta:
+¡Hola! Veo que estás intentando fusionar (merge) la rama `rama-a` en tu rama actual `main`, pero Git no pudo resolver automáticamente los cambios porque ambos modificaron el mismo archivo (`archivo.txt`) de manera incompatible.
+
+Aquí tienes la explicación y los pasos para resolverlo:
+
+### ¿Qué error muestra y qué significa?
+
+*   **Error:** `CONFLICT (content): Merge conflict in archivo.txt`
+*   **Significado:** Git intentó combinar los cambios de `rama-a` con `main`. Logró fusionar la mayoría de las cosas, pero en el archivo `archivo.txt` hubo cambios que chocaron entre sí (por ejemplo, ambas ramas modificaron la misma línea). Git no sabe cuál versión es la correcta, por lo que detiene el proceso y te pide que lo resuelvas manualmente.
+
+---
+
+### Pasos para resolverlo:
+
+1.  **Abre el archivo con conflictos:**
+    Abre el archivo `archivo.txt` en tu editor de código favorito (VS Code, Notepad++, etc.).
+
+2.  **Identifica las marcas de conflicto:**
+    Dentro del archivo verás bloques de texto delimitados por estas líneas:
+    ```text
+    <<<<<<< HEAD
+    (Tu código actual en main)
+    =======
+    (El código que viene de rama-a)
+    >>>>>>> rama-a
+    ```
+    *   `<<<<<<< HEAD`: Indica el inicio de tu versión actual.
+    *   `=======`: Separa tu versión de la versión entrante.
+    *   `>>>>>>> rama-a`: Indica el final de la versión entrante.
+
+3.  **Resuelve el conflicto manualmente:**
+    Edita el archivo para decidir qué contenido quieres conservar. Puedes:
+    *   Dejar solo tu código (borrar la parte de `rama-a`).
+    *   Dejar solo el código de `rama-a` (borrar la parte de `HEAD`).
+    *   Combinar partes de ambos.
+    *   **Importante:** Debes borrar las líneas `<<<<<<<`, `=======` y `>>>>>>>` una vez que hayas decidido el contenido final.
+
+4.  **Guarda el archivo:**
+    Guarda los cambios en `archivo.txt`.
+
+5.  **Añade el archivo resuelto al staging area:**
+    Ejecuta este comando en la terminal:
+    ```bash
+    git add archivo.txt
+    ```
+
+6.  **Completa el merge:**
+    Ahora que el conflicto está resuelto, necesitas confirmar la fusión con un commit:
+    ```bash
+    git commit
+    ```
+    *   Se abrirá tu editor predeterminado para escribir el mensaje del commit. Git suele prellenar un mensaje como "Merge branch 'rama-a'". Puedes dejarlo así o modificarlo, y luego guarda y cierra el editor.
+
+7.  **Verifica el estado (opcional):**
+    Para asegurarte de que todo quedó bien, puedes ejecutar:
+    ```bash
+    git status
+    ```
+    Debería decirte que estás en la rama `main` y que no hay archivos pendientes de commit.
+
+¡Listo! Ya has resuelto el conflicto y completado la fusión.

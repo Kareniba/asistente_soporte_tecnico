@@ -1,10 +1,11 @@
-"""1.1 Pregunta sobre una imagen local (base64)."""
+"""1.1 Pregunta sobre una imagen local (base64): captura de un error real de Git."""
 from comun import IMAGENES, RESULTADOS, crear_cliente, preguntar
 
-IMAGEN = IMAGENES / "img2_academico_p19.png"
+IMAGEN = next(IMAGENES.glob("err1*.png"))
 PREGUNTA = (
-    "Según esta página del reglamento, ¿cuáles son las causales por las que "
-    "se pierde la condición de estudiante? Enuméralas."
+    "Un usuario le envía a un asistente de soporte técnico de Git esta captura de su terminal. "
+    "¿Qué error muestra, qué significa y qué debería hacer para resolverlo? "
+    "Responde en español con pasos numerados y deja los comandos tal como aparecen."
 )
 
 if __name__ == "__main__":

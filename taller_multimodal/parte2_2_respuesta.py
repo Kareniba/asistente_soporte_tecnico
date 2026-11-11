@@ -4,11 +4,11 @@ import json
 from comun import MODELO_TEXTO, RESULTADOS, crear_cliente
 
 SISTEMA = (
-    "Eres un asistente que responde preguntas sobre reglamentos institucionales universitarios "
-    "(reglamento académico y reglamento interno de trabajo). El texto del usuario es la "
+    "Eres un asistente de soporte técnico de Git y GitHub (SSH, conflictos de merge y pull requests). "
+    "El texto del usuario es la "
     "transcripción automática de un audio y puede tener errores de reconocimiento. "
-    "Responde en español, de forma breve y clara. Si no estás seguro de algún dato del "
-    "reglamento, dilo en lugar de inventarlo."
+    "Responde en español, de forma breve y clara, con pasos y comandos exactos. Si no estás seguro de algún dato, "
+    "dilo en lugar de inventarlo."
 )
 
 if __name__ == "__main__":

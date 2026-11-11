@@ -1,26 +1,26 @@
 {
-  "img2_academico_p19.png": {
-    "documento": "Reglamento Académico Institucional",
-    "primer_articulo": 41,
-    "ultimo_articulo": 41,
-    "numero_paragrafos": 3,
-    "nit_institucion": "860.504.759-5",
-    "tema_principal": "Pérdida de la condición de estudiante"
+  "err1": {
+    "comando_ejecutado": "git merge rama-a",
+    "mensaje_error": "CONFLICT (content): Merge conflict in archivo.txt",
+    "tipo_error": "conflicto_de_merge",
+    "recurso_afectado": "archivo.txt",
+    "relacionado_con_ssh": false,
+    "sugiere_solucion": true
   },
-  "img3_academico_p39.png": {
-    "documento": "Reglamento Académico Institucional",
-    "primer_articulo": 88,
-    "ultimo_articulo": 88,
-    "numero_paragrafos": 0,
-    "nit_institucion": "860.504.759-5",
-    "tema_principal": "Derechos del estudiante"
+  "err3": {
+    "comando_ejecutado": "ssh -T usuario@github.com",
+    "mensaje_error": "usuario@github.com: Permission denied (publickey).",
+    "tipo_error": "autenticacion_ssh",
+    "recurso_afectado": "github.com",
+    "relacionado_con_ssh": true,
+    "sugiere_solucion": false
   },
-  "img5_trabajo_p47.png": {
-    "documento": "Reglamento Interno de Trabajo",
-    "primer_articulo": 83,
-    "ultimo_articulo": 85,
-    "numero_paragrafos": 4,
-    "nit_institucion": "860.504.759-5",
-    "tema_principal": "Recursos contra sanciones, cierre del proceso y reclamos"
+  "err4": {
+    "comando_ejecutado": "git push",
+    "mensaje_error": "fatal: No configured push destination.",
+    "tipo_error": "remoto_no_configurado",
+    "recurso_afectado": null,
+    "relacionado_con_ssh": false,
+    "sugiere_solucion": true
   }
 }

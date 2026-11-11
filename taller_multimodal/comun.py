@@ -50,7 +50,7 @@ import json
 AUDIOS = CARPETA / "audios"
 MODELO_AUDIO = os.getenv("MODELO_AUDIO", "whisper-large-v3-turbo")
 MODELO_TEXTO = os.getenv("MODELO_TEXTO", "openai/gpt-oss-20b")
-FORMATOS_AUDIO = {".wav", ".mp3", ".m4a", ".ogg", ".webm"}
+FORMATOS_AUDIO = {".wav", ".mp3", ".m4a", ".mp4", ".ogg", ".webm"}
 MAX_MB_AUDIO = 25
 
 
