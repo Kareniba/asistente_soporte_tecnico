@@ -296,3 +296,38 @@ button {
         padding: 0 14px 14px;
     }
 }
+
+/* --- Avance 3: tools usadas y fuentes por origen --- */
+.tools-used {
+    margin-top: 12px;
+    font-size: 0.85rem;
+}
+
+.tools-used summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.tool-item {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-left: 3px solid currentColor;
+    opacity: 0.9;
+}
+
+.tool-name {
+    font-weight: 600;
+}
+
+.tool-args {
+    display: block;
+    margin: 4px 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.8rem;
+}
+
+.sources-web .source-document {
+    display: inline-block;
+    text-decoration: underline;
+}

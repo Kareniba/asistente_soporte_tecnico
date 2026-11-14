@@ -1,0 +1,323 @@
+﻿id,user_input,retrieved_contexts,response,reference,faithfulness,answer_relevancy,context_precision,context_recall
+1,"Me sale Permission denied (publickey) cuando hago git push, ¿qué debo revisar?","[""# Error: Permission denied (publickey)\n\n> [!NOTE] \n\n## Should the `sudo` command or elevated privileges be used with Git?\n\nYou should not be using the `sudo` command or elevated privileges, such as administrator permissions, with Git.\n\nIf you have a _very good reason_ you must use `sudo`, then ensure you are using it with every command. If you generate SSH keys without `sudo` and then try to use a command like `sudo git push`, you won't be using the same keys that you generated.\n\n## Check that you are connecting to the correct server\n\nTo make sure you are connecting to the right domain, you can enter the following command:\n\n```shell copy\nssh -vT git@\n```\n\nYou should see this output:"", '# Error: Permission to user/repo denied to user/other-repo\n\nTo fix this, remove the deploy key from the repository, and add the key to your personal account instead.\n\nIf the key you are using is intended to be a deploy key, check out our guide on deploy keys for more details.', '# Requesting a pull request review\n\nTo request a review, you need write access to the repository. You can request a review from a person or team with read access to the repository, and they  receive a notification. For complete details on permissions for requesting reviews, see .\n\n## Requesting reviews from collaborators and organization members\n\nSuggested reviewers are based on git blame data. After someone reviews your pull request and you make changes, you can request another review from the same reviewer.\n\n> [!WARNING]\n> \n\n1. In the list of pull requests, click the pull request that you want a specific person or team to review.\n1. To request a review from a suggested person under **Reviewers**, next to their username, click **Request**.', '1. Click **Create Pull Request**.  opens your default browser and takes you to GitHub.\n\n1. After you commit changes to your local copy of the repository, click the **Create Pull Request** icon.\n!Screenshot of the top of the ""Source Control"" side bar. The pull request icon is highlighted with a dark orange outline.\n1. Check that the local branch and repository you\'re merging from, and the remote branch and repository you\'re merging into, are correct. Then, give the pull request a title and a description.\n!Screenshot of the ""GitHub Pull Request"" side bar with a form for creating a pull request, including ""Title"" and ""Description"" fields.\n1. Click **Create**.\n\nFor more information on creating pull requests in , see .\n\n## Making changes to files in your pull request']","**Qué revisar cuando aparece `Permission denied (publickey)` al hacer `git push`**
+
+1. **No uses `sudo` ni privilegios elevados con Git**  
+   Si generaste tus claves SSH sin `sudo` y luego ejecutas `sudo git push`, Git no usará esas claves. Ejecuta los comandos de Git con tu usuario normal.  
+   *Fuente: troubleshooting-ssh_error-permission-denied-publickey.md, pág. 1*
+
+2. **Comprueba que te estás conectando al servidor correcto**  
+   Ejecuta:  
+
+   ```bash
+   ssh -vT git@github.com
+   ```  
+
+   La salida mostrará a qué dominio te estás autenticando y si la clave se está ofreciendo.  
+   *Fuente: troubleshooting-ssh_error-permission-denied-publickey.md, pág. 1*
+
+3. **Verifica que la clave pública está registrada en tu cuenta de GitHub**  
+   - Abre **Settings → SSH and GPG keys** en GitHub.  
+   - Asegúrate de que la clave que aparece en `~/.ssh/id_rsa.pub` (u otro archivo que uses) está añadida.  
+   - Si la clave no está, copia su contenido y añádela como *New SSH key*.
+
+4. **Confirma que la clave privada está siendo usada por el agente SSH**  
+
+   ```bash
+   ssh-add -l          # lista las claves cargadas
+   ssh-add ~/.ssh/id_rsa   # (o el archivo que corresponda) si no aparece
+   ```
+
+5. **Revisa los permisos de los archivos de clave**  
+
+   ```bash
+   chmod 600 ~/.ssh/id_rsa
+   chmod 644 ~/.ssh/id_rsa.pub
+   chmod 700 ~/.ssh
+   ```
+
+6. **Si usas varias claves, especifica cuál usar en `~/.ssh/config`**  
+
+   ```text
+   Host github.com
+       HostName github.com
+       User git
+       IdentityFile ~/.ssh/id_rsa_personal
+   ```
+
+7. **Intenta de nuevo el push**  
+
+   ```bash
+   git push origin <rama>
+   ```
+
+Si después de estos pasos el error persiste, revisa que la clave no haya sido revocada en GitHub y que la cuenta con la que intentas hacer push tenga permisos de escritura en el repositorio.","No uses sudo ni privilegios elevados con Git, conéctate como el usuario git, verifica que tu clave SSH esté cargada con `ssh-add -l`, confirma la conexión con `ssh -vT git@github.com` y asegúrate de que la clave pública esté agregada a tu cuenta de GitHub.",0.17391304347826086,0.9324156135474762,0.99999999995,1.0
+2,¿Por qué GitHub eliminó mi clave SSH?,"[""# Error: We''re doing an SSH key audit\n\nWhen using an unverified key to perform Git operations, you will be prompted to perform an audit of your SSH keys.\n\n```shell\nERROR: We're doing an SSH key audit.\nReason: unverified due to lack of use\nPlease visit https://github.com/settings/ssh\nto approve this key so we know it's safe.\nFingerprint: ab:08:46:83:ff:f6:c4:f8:a9:4e:68:6b:94:17:f2:46\nfatal: could not read from remote repository\n```\n\n## Solving the issue\n\nTo fix this, you need to review your SSH keys and either reject or approve the unverified key. Clicking the URL link in the error message brings you to the SSH Settings page, where the unverified SSH key is highlighted in the SSH key list."", ""# Deleted or missing SSH keys\n\nGitHub automatically deletes inactive SSH keys to help keep accounts safe, such as after someone leaves a job or loses a computer.\n\nYou can check if you haven't used an SSH key in a year by reviewing your account's security log. For more information, see .\n\nAfter your inactive SSH key is deleted, you must generate a new SSH key and associate it with your account. For more information, see  and ."", ""# Error: Host key verification failed\n\nThis error means that the server to which you're connecting presented a key that doesn't match the keys seen for this server in the past.\n\nYou may see this error if the server has changed its keys unexpectedly, in which case you should be able to find an official report from a trustworthy source announcing the change. If  changes its SSH host key, this will be announced on  at github.blog.\n\nYou can find an up-to-date list of 's public SSH keys on . You may need to add these keys to your `known_hosts` file. For more information, see ."", '# Error: Key already in use\n\n## Finding where the key has been used\n\nTo determine where the key has already been used, open a terminal and type the `ssh` command. Use the `-i` flag to provide the path to the key you want to check:\n\n```shell\n$ ssh -T -ai ~/.ssh/id_rsa git@\n# Connect to  using a specific ssh key\n> Hi USERNAME! You\'ve successfully authenticated, but GitHub does not\n> provide shell access.\n```\n\nThe _username_ in the response is the account on  that the key is currently attached to. If the response looks something like ""username/repo"", the key has been attached to a repository as a _deploy key_.\n\nTo force SSH to use only the key provided on the command line, use `-o` to add the `IdentitiesOnly=yes` option:\n\n```shell\nssh -v -o ""IdentitiesOnly=yes"" -i ~/.ssh/id_rsa git@\n```']","**Según la base de conocimientos**
+
+GitHub elimina automáticamente las claves SSH que están inactivas para mantener la seguridad de la cuenta.  
+Esto ocurre, por ejemplo, cuando una clave no se ha usado durante un período prolongado (por lo general un año) o cuando se detecta que la clave ya no es necesaria (por ejemplo, después de que alguien deja la empresa o pierde el equipo).  
+
+> «GitHub automatically deletes inactive SSH keys to help keep accounts safe, such as after someone leaves a job or loses a computer. You can check if you haven't used an SSH key in a year by reviewing your account's security log.»  
+> **Fuente:** *troubleshooting-ssh_deleted-or-missing-ssh-keys.md*, pág. 1
+
+**Qué puedes hacer**
+
+1. Revisa el registro de seguridad de tu cuenta para confirmar que la clave estuvo inactiva.  
+2. Genera una nueva clave SSH (`ssh-keygen -t ed25519 -C ""tu_email@example.com""`).  
+3. Añade la nueva clave en **Settings → SSH and GPG keys** de tu cuenta de GitHub.  
+
+Si la clave fue eliminada por un proceso de auditoría (clave no verificada), GitHub mostrará un mensaje como “We’re doing an SSH key audit” y deberás aprobarla en la página de configuración de SSH.  
+
+> «When using an unverified key … you will be prompted to perform an audit of your SSH keys… Please visit https://github.com/settings/ssh to approve this key…»  
+> **Fuente:** *troubleshooting-ssh_error-were-doing-an-ssh-key-audit.md*, pág. 1
+
+En resumen, GitHub elimina claves SSH inactivas o no verificadas para proteger tu cuenta. Genera y registra una nueva clave para volver a operar sin problemas.","GitHub elimina automáticamente las claves SSH inactivas, es decir, las que no se han usado en un año, como medida de seguridad. Puedes comprobarlo revisando el registro de seguridad de tu cuenta.",0.7,0.8401851792444492,0.49999999995,1.0
+3,"El puerto 22 está bloqueado en mi red, ¿cómo me conecto a GitHub por SSH?","[""# Error: Bad file number\n\nWhen running remote Git commands or SSH, your connection might time out:\n\n```shell\n$ ssh -vT git@\n> OpenSSH_8.1p1, LibreSSL 2.7.3\n> debug1: Connecting to  [207.97.227.239] port 22.\n> debug1: connect to address 207.97.227.239 port 22: Connection timed out\n> ssh: connect to host  port 22: Connection timed out\n> ssh: connect to host  port 22: Bad file number\n```\n\n## Solving the issue\n\n### Use HTTPS\n\nOften, the simplest solution is to simply avoid SSH entirely. Most firewalls and proxies allow HTTPS traffic without issue. To take advantage of this, change the remote URL you're using:"", ""```shell\ngit clone ssh://git@ssh.:443/YOUR-USERNAME/YOUR-REPOSITORY.git\n```\n\n## Enabling SSH connections over HTTPS\n\nIf you are able to SSH into `git@ssh.` over port 443, you can override your SSH settings to force any connection to  to run through that server and port.\n\nTo set this in your SSH configuration file, edit the file at `~/.ssh/config`, and add this section:\n\n```text\nHost \n    Hostname ssh.\n    Port 443\n    User git\n```\n\nYou can test that this works by connecting once more to :\n\n```bash\n$ ssh -T git@\n# Hi USERNAME! You've successfully authenticated, but GitHub does not\n# provide shell access.\n```\n\n## Updating known hosts"", ""# Using SSH over the HTTPS port\n\n> [!WARNING]\n> ** users:** Accessing  via SSH over the HTTPS port is currently not supported.  \n> ** users:** Accessing  via SSH over the HTTPS port is currently not supported.\n\nTo test if SSH over the HTTPS port is possible, run this SSH command:\n\n```bash\n$ ssh -T -p 443 git@ssh.github.com\n# Hi USERNAME! You've successfully authenticated, but GitHub does not\n# provide shell access.\n```\n\nIf that worked, great! If not, you may need to follow our troubleshooting guide.\n\n> [!NOTE] The hostname for port 443 is `ssh.`, not ``.\n\nNow, to clone the repository, you can run the following command:\n\n```shell\ngit clone ssh://git@ssh.:443/YOUR-USERNAME/YOUR-REPOSITORY.git\n```\n\n## Enabling SSH connections over HTTPS"", '## Updating known hosts\n\nThe first time you interact with GitHub after switching to port 443, you may get a warning message\nthat the host wasn\'t found in `known_hosts`, or that it was found by another name.\n\n```bash\n# The authenticity of host \'[ssh.github.com]:443 ([140.82.112.36]:443)\' can\'t be established.\n# ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.\n# This host key is known by the following other names/addresses:\n#     ~/.ssh/known_hosts:32: github.com\n# Are you sure you want to continue connecting (yes/no/[fingerprint])?\n```\n\nIt is safe to answer ""yes"" to this question, assuming that the SSH fingerprint matches\none of GitHub\'s published fingerprints. For the list of fingerprints, see .']","**Conexión SSH a GitHub cuando el puerto 22 está bloqueado**
+
+1. **Usa el puerto 443 (el mismo que HTTPS).**  
+   GitHub permite SSH a través de `ssh.github.com` en el puerto 443.
+
+2. **Configura tu cliente SSH** editando `~/.ssh/config` (crea el archivo si no existe) y añadiendo:
+
+   ```text
+   Host ssh.github.com
+       Hostname ssh.github.com
+       Port 443
+       User git
+   ```
+
+   Con esto cualquier comando `ssh` a `ssh.github.com` usará el puerto 443.  
+   *Fuente: troubleshooting-ssh_using-ssh-over-the-https-port.md, pág. 1.*
+
+3. **Prueba la conexión**:
+
+   ```bash
+   $ ssh -T -p 443 git@ssh.github.com
+   # Hi <TU_USUARIO>! You've successfully authenticated, but GitHub does not
+   # provide shell access.
+   ```
+
+   Si recibes el mensaje anterior, la conexión está funcionando.  
+   *Fuente: troubleshooting-ssh_using-ssh-over-the-https-port.md, pág. 1.*
+
+4. **Clona o usa repositorios con la URL SSH que incluye el puerto 443**. Por ejemplo:
+
+   ```bash
+   git clone ssh://git@ssh.github.com:443/USUARIO/REPOSITORIO.git
+   ```
+
+   (Reemplaza `USUARIO` y `REPOSITORIO` por los tuyos).  
+   *Fuente: troubleshooting-ssh_using-ssh-over-the-https-port.md, pág. 1.*
+
+5. **Acepta la huella del host** la primera vez que te conectes. Verás un mensaje como:
+
+   ```
+   # The authenticity of host '[ssh.github.com]:443 ([140.82.112.36]:443)' can't be established.
+   # ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+   # Are you sure you want to continue connecting (yes/no/[fingerprint])?
+   ```
+
+   Responde **yes** siempre que la huella coincida con la publicada por GitHub.  
+   *Fuente: troubleshooting-ssh_using-ssh-over-the-https-port.md, pág. 1.*
+
+Con estos pasos podrás seguir usando SSH con GitHub aunque el puerto 22 esté bloqueado en tu red.","Puedes probar SSH sobre el puerto HTTPS con `ssh -T -p 443 git@ssh.github.com`. Si funciona, clona el repositorio con `git clone ssh://git@ssh.github.com:443/TU-USUARIO/TU-REPOSITORIO.git`. El nombre de host para el puerto 443 es ssh.github.com, no github.com, y los servidores proxy pueden interferir.",0.6818181818181818,0.9259263546117411,0.6388888888675925,0.6666666666666666
+4,"Me dice que la clave ya está en uso al agregar mi clave SSH, ¿qué significa?","[""If you don't see your public key in , you'll need to add your SSH key to  to associate it with your computer.\n\n> [!WARNING]\n> If you see an SSH key you're not familiar with on , delete it immediately and contact  for further help. An unidentified public key may indicate a possible security concern. For more information, see ."", ""# Error: Host key verification failed\n\nThis error means that the server to which you're connecting presented a key that doesn't match the keys seen for this server in the past.\n\nYou may see this error if the server has changed its keys unexpectedly, in which case you should be able to find an official report from a trustworthy source announcing the change. If  changes its SSH host key, this will be announced on  at github.blog.\n\nYou can find an up-to-date list of 's public SSH keys on . You may need to add these keys to your `known_hosts` file. For more information, see ."", '```shell\nssh -v -o ""IdentitiesOnly=yes"" -i ~/.ssh/id_rsa git@\n```\n\n## Fixing the issue\n\nTo resolve the issue, first remove the key from the other account or repository and then add it to your account.\n\nIf you don\'t have permissions to transfer the key, and can\'t contact a user who does, remove the keypair and generate a brand new one.\n\n## Deploy keys\n\nOnce a key has been attached to one repository as a deploy key, it cannot be used on another repository. If you\'re running into this error while setting up deploy keys, see .', '# Error: Key already in use\n\n## Finding where the key has been used\n\nTo determine where the key has already been used, open a terminal and type the `ssh` command. Use the `-i` flag to provide the path to the key you want to check:\n\n```shell\n$ ssh -T -ai ~/.ssh/id_rsa git@\n# Connect to  using a specific ssh key\n> Hi USERNAME! You\'ve successfully authenticated, but GitHub does not\n> provide shell access.\n```\n\nThe _username_ in the response is the account on  that the key is currently attached to. If the response looks something like ""username/repo"", the key has been attached to a repository as a _deploy key_.\n\nTo force SSH to use only the key provided on the command line, use `-o` to add the `IdentitiesOnly=yes` option:\n\n```shell\nssh -v -o ""IdentitiesOnly=yes"" -i ~/.ssh/id_rsa git@\n```']","**Qué significa el mensaje “Key already in use”**
+
+El mensaje indica que la clave SSH que intentas añadir ya está asociada a otra cuenta o a otro repositorio (por ejemplo, como *deploy key*). GitHub no permite que la misma clave pública se use simultáneamente en más de una cuenta o repositorio.
+
+**Cómo resolverlo**
+
+1. **Identificar dónde está usada la clave**  
+   Ejecuta en la terminal:  
+   ```bash
+   ssh -T -ai ~/.ssh/id_rsa git@github.com
+   ```  
+   La respuesta mostrará el nombre de usuario o el repositorio al que está vinculada la clave.  
+   *Fuente: «troubleshooting-ssh_error-key-already-in-use.md», pág. 1*.
+
+2. **Eliminar la clave del otro lugar**  
+   - Si la clave está asociada a otra cuenta, entra en la configuración de **SSH and GPG keys** de esa cuenta y elimínala.  
+   - Si está usada como *deploy key* en un repositorio, ve a **Settings → Deploy keys** del repositorio y elimínala.
+
+3. **Añadir la clave a tu cuenta**  
+   - Vuelve a la página **Settings → SSH and GPG keys** de tu cuenta actual.  
+   - Haz clic en **New SSH key**, pega la clave pública y guarda.
+
+4. **Si no puedes eliminarla** (por falta de permisos)  
+   - Genera un nuevo par de claves SSH (`ssh-keygen -t ed25519 -C ""tu_email@example.com""`).  
+   - Añade la nueva clave a tu cuenta siguiendo el paso 3.  
+   *Fuente: «troubleshooting-ssh_error-key-already-in-use.md», pág. 1*.
+
+Con estos pasos la clave dejará de estar “en uso” y podrás usarla sin problemas.","Significa que esa clave ya fue agregada a otra cuenta o repositorio. Para saber dónde se usa, ejecuta `ssh -T -ai ~/.ssh/id_rsa git@github.com`: el nombre de usuario de la respuesta es la cuenta a la que está asociada la clave, y si aparece algo como usuario/repo, está adjunta a un repositorio como deploy key. Para resolverlo, elimina la clave de la otra cuenta o repositorio y luego agrégala a tu cuenta.",0.9090909090909091,0.7098357407889555,0.8055555555287036,1.0
+5,"Me aparece el error Permission to user/repo denied to user/other-repo, ¿cómo lo soluciono?","[""# Error: Permission denied (publickey)\n\n> [!NOTE] \n\n## Should the `sudo` command or elevated privileges be used with Git?\n\nYou should not be using the `sudo` command or elevated privileges, such as administrator permissions, with Git.\n\nIf you have a _very good reason_ you must use `sudo`, then ensure you are using it with every command. If you generate SSH keys without `sudo` and then try to use a command like `sudo git push`, you won't be using the same keys that you generated.\n\n## Check that you are connecting to the correct server\n\nTo make sure you are connecting to the right domain, you can enter the following command:\n\n```shell copy\nssh -vT git@\n```\n\nYou should see this output:"", '# Error: Permission to user/repo denied to other-user\n\nTo fix this, the owner of the repository (`user`) needs to add your account (`other-user`) as a collaborator on the repository or to a team that has write access to the repository.', '# Error: Permission to user/repo denied to user/other-repo\n\nTo fix this, remove the deploy key from the repository, and add the key to your personal account instead.\n\nIf the key you are using is intended to be a deploy key, check out our guide on deploy keys for more details.', '# Requesting a pull request review\n\nTo request a review, you need write access to the repository. You can request a review from a person or team with read access to the repository, and they  receive a notification. For complete details on permissions for requesting reviews, see .\n\n## Requesting reviews from collaborators and organization members\n\nSuggested reviewers are based on git blame data. After someone reviews your pull request and you make changes, you can request another review from the same reviewer.\n\n> [!WARNING]\n> \n\n1. In the list of pull requests, click the pull request that you want a specific person or team to review.\n1. To request a review from a suggested person under **Reviewers**, next to their username, click **Request**.']","**Solución al error “Permission to user/repo denied to user/other-repo”**
+
+1. **Comprueba el tipo de clave que estás usando**  
+   - Si la clave SSH está configurada como *deploy key* (una clave asociada al repositorio), **no** debe usarse para acceder con otra cuenta.  
+   - Elimina la deploy key del repositorio y añádela a tu cuenta personal.  
+
+2. **Añade tu cuenta como colaborador**  
+   - El propietario del repositorio (`user`) debe invitar a tu cuenta (`other-repo`) como colaborador o incluirte en un equipo con permisos de escritura.  
+
+3. **Verifica que la clave SSH sea la correcta**  
+   - Asegúrate de que la clave que estás usando pertenece a tu cuenta personal y no a otro usuario o a una clave de despliegue.  
+
+4. **Reintenta la operación** (`git push`, `git fetch`, etc.) después de aplicar los cambios anteriores.
+
+**Fuentes**  
+- «Error: Permission to user/repo denied to user/other-repo… remove the deploy key… add the key to your personal account» – *troubleshooting-ssh_error-permission-to-userrepo-denied-to-userother-repo.md*, pág. 1.  
+- «Error: Permission to user/repo denied to other-user… the owner… needs to add your account as a collaborator…» – *troubleshooting-ssh_error-permission-to-userrepo-denied-to-other-user.md*, pág. 1.","Ocurre cuando se usa una deploy key que está asociada a otro repositorio. Para solucionarlo, elimina la deploy key del repositorio y agrega la clave a tu cuenta personal.",0.375,0.9576965447674551,0.3333333333,1.0
+6,¿Qué hago si me sale Host key verification failed?,"[""# Error: Host key verification failed\n\nThis error means that the server to which you're connecting presented a key that doesn't match the keys seen for this server in the past.\n\nYou may see this error if the server has changed its keys unexpectedly, in which case you should be able to find an official report from a trustworthy source announcing the change. If  changes its SSH host key, this will be announced on  at github.blog.\n\nYou can find an up-to-date list of 's public SSH keys on . You may need to add these keys to your `known_hosts` file. For more information, see ."", ""# Error: We''re doing an SSH key audit\n\nWhen using an unverified key to perform Git operations, you will be prompted to perform an audit of your SSH keys.\n\n```shell\nERROR: We're doing an SSH key audit.\nReason: unverified due to lack of use\nPlease visit https://github.com/settings/ssh\nto approve this key so we know it's safe.\nFingerprint: ab:08:46:83:ff:f6:c4:f8:a9:4e:68:6b:94:17:f2:46\nfatal: could not read from remote repository\n```\n\n## Solving the issue\n\nTo fix this, you need to review your SSH keys and either reject or approve the unverified key. Clicking the URL link in the error message brings you to the SSH Settings page, where the unverified SSH key is highlighted in the SSH key list."", '## Updating known hosts\n\nThe first time you interact with GitHub after switching to port 443, you may get a warning message\nthat the host wasn\'t found in `known_hosts`, or that it was found by another name.\n\n```bash\n# The authenticity of host \'[ssh.github.com]:443 ([140.82.112.36]:443)\' can\'t be established.\n# ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.\n# This host key is known by the following other names/addresses:\n#     ~/.ssh/known_hosts:32: github.com\n# Are you sure you want to continue connecting (yes/no/[fingerprint])?\n```\n\nIt is safe to answer ""yes"" to this question, assuming that the SSH fingerprint matches\none of GitHub\'s published fingerprints. For the list of fingerprints, see .', '# Error: Key already in use\n\n## Finding where the key has been used\n\nTo determine where the key has already been used, open a terminal and type the `ssh` command. Use the `-i` flag to provide the path to the key you want to check:\n\n```shell\n$ ssh -T -ai ~/.ssh/id_rsa git@\n# Connect to  using a specific ssh key\n> Hi USERNAME! You\'ve successfully authenticated, but GitHub does not\n> provide shell access.\n```\n\nThe _username_ in the response is the account on  that the key is currently attached to. If the response looks something like ""username/repo"", the key has been attached to a repository as a _deploy key_.\n\nTo force SSH to use only the key provided on the command line, use `-o` to add the `IdentitiesOnly=yes` option:\n\n```shell\nssh -v -o ""IdentitiesOnly=yes"" -i ~/.ssh/id_rsa git@\n```']","**Pasos para resolver “Host key verification failed”**
+
+1. **Verifica que la clave del servidor haya cambiado**  
+   - Este error indica que la clave que el servidor presenta no coincide con la que tienes guardada en `~/.ssh/known_hosts`.  
+   - Si el servidor (por ejemplo, GitHub) ha cambiado sus claves, busca el anuncio oficial (por ejemplo, en github.blog) para confirmar el cambio.  
+
+2. **Actualiza tu archivo `known_hosts`**  
+   - Elimina la entrada antigua del host problemático:  
+     ```bash
+     ssh-keygen -R github.com   # o la dirección que aparezca en el error
+     ```  
+   - Vuelve a conectar para que se añada la nueva clave:  
+     ```bash
+     ssh -T git@github.com
+     ```  
+   - Cuando se te pregunte “Are you sure you want to continue connecting…”, responde **yes** siempre que la huella coincida con la publicada por GitHub.  
+
+3. **Comprueba que la nueva huella sea la oficial**  
+   - Consulta la lista de huellas públicas de GitHub (documentada en la página de claves SSH de GitHub).  
+   - Si la huella mostrada coincide, puedes confiar en ella; de lo contrario, no aceptes la clave.  
+
+4. **Reintenta la operación de Git**  
+   - Después de actualizar `known_hosts`, ejecuta nuevamente el comando que falló (por ejemplo, `git push` o `git clone`).  
+
+> Fuente: *troubleshooting-ssh_error-host-key-verification-failed.md*, pág. 1.","El error significa que el servidor al que te conectas presentó una clave que no coincide con las que SSH había visto antes para ese servidor. Puede pasar si el servidor cambió sus claves, y en ese caso debe existir un anuncio oficial (GitHub los publica en su blog). Puede que debas agregar las claves públicas SSH actuales de GitHub a tu archivo known_hosts. Si no encuentras una fuente oficial, lo más seguro es no conectarte y contactar a tu departamento de TI o al soporte del servidor.",0.5555555555555556,0.6550356511945558,0.8333333332916666,1.0
+7,¿Cómo resuelvo un conflicto de merge desde la página del pull request en GitHub?,"['# Resolving a merge conflict on GitHub\n\nYou can resolve simple competing line change conflicts on . For other conflicts, use the command line. See .\n\nIf  is enabled for the repository, you can click **Fix with ** in the merge box to have  resolve conflicts automatically. See .\n\nIf a site administrator disables the merge conflict editor for pull requests between repositories, resolve merge conflicts on the command line.\n\n> [!WARNING]\n> Resolving conflicts on  merges the entire base branch into the head branch. If the head branch is the default or protected branch, you may be prompted to create a new head branch. See .\n\n1. In the ""Pull Requests"" list, click the pull request with a merge conflict that you want to resolve.\n1. Near the bottom of your pull request, click **Resolve conflicts**.', '!Screenshot of a warning that a pull request has a merge conflict. The ""Resolve merge conflicts"" button is outlined in dark orange.\n\n   > [!NOTE]\n   > If **Resolve conflicts** is deactivated, resolve the conflict using another Git client or the command line. See .\n\n1. If your file has more than one merge conflict, scroll down to the next set of conflict markers and repeat steps four and five to resolve the conflict.\n1. After you\'ve resolved all the conflicts in the file, click **Mark as resolved**.\n\n   !Screenshot of the editor to resolve a merge conflict in a pull request. The ""Mark as resolved"" button is outlined in dark orange.', '1. Click **Create Pull Request**.  opens your default browser and takes you to GitHub.\n\n1. After you commit changes to your local copy of the repository, click the **Create Pull Request** icon.\n!Screenshot of the top of the ""Source Control"" side bar. The pull request icon is highlighted with a dark orange outline.\n1. Check that the local branch and repository you\'re merging from, and the remote branch and repository you\'re merging into, are correct. Then, give the pull request a title and a description.\n!Screenshot of the ""GitHub Pull Request"" side bar with a form for creating a pull request, including ""Title"" and ""Description"" fields.\n1. Click **Create**.\n\nFor more information on creating pull requests in , see .\n\n## Making changes to files in your pull request', '# Reverting a pull request\n\n## About reverting a pull request\n\nReverting a merged pull request creates a new pull request that reverts the original merge commit. You must have write permissions in the repository.\n\n## Reverting a pull request\n\n> [!NOTE]\n> You may need to revert individual commits if reverting the pull request causes merge conflicts or if the original pull request was not merged on . See Git revert in the Git documentation.\n\n1. In the ""Pull Requests"" list, click the pull request you want to revert.\n1. Near the bottom of the pull request, click **Revert**. If the **Revert** option isn\'t displayed, you need to ask the repository administrator for write permissions.\n\n   !Screenshot of a pull request\'s timeline. The ""Revert"" button is outlined in dark orange.']","**Resolución de un conflicto de merge desde la página del pull request en GitHub**
+
+1. En la lista de **Pull Requests**, haz clic en el pull request que muestra el conflicto de merge.  
+2. En la parte inferior del pull request, pulsa el botón **Resolve conflicts**.  
+3. Aparecerá el editor de conflictos de GitHub.  
+   - Si el archivo tiene varios conflictos, desplázate hasta cada bloque de marcadores y repite los pasos 4‑5 para cada uno.  
+4. Edita el contenido del archivo, eligiendo la versión correcta o combinando los cambios según corresponda.  
+5. Cuando hayas solucionado todos los conflictos, haz clic en **Mark as resolved**.  
+6. Finalmente, pulsa **Commit merge** (o **Merge pull request**) para completar la fusión.  
+
+> **Nota:** Si el botón **Resolve conflicts** está desactivado, deberás resolver el conflicto usando otro cliente Git o la línea de comandos.  
+
+«Fuente: merge-and-close-pull-requests_resolving-a-merge-conflict-on-github.md, pág. 1».","Haz clic en el botón Resolve conflicts, localiza en el editor los marcadores de conflicto (<<<<<<<, ======= y >>>>>>>), edita el archivo para decidir qué cambios conservar y elimina los marcadores. Luego haz clic en Mark as resolved, repite el proceso con cada archivo en conflicto y finaliza con Commit merge.",0.75,0.9581155625040103,0.99999999995,0.5
+8,¿Cómo resuelvo desde la línea de comandos un conflicto de merge causado por cambios en las mismas líneas?,"['# Resolving a merge conflict using the command line\n\nMerge conflicts happen when competing changes are made to the same line of a file, or when one person edits a file and another person deletes the same file. See .\n\n> [!TIP]\n> You can use the conflict editor on  to resolve competing line change merge conflicts between branches that are part of a pull request. See .\n\n## Competing line change merge conflicts\n\nWhen competing changes affect the same lines, choose which changes to keep, then commit the resolution.\n\n1. Open your terminal or Git Bash.\n1. Navigate into the local Git repository that has the merge conflict.\n\n   ```shell\n   cd REPOSITORY-NAME\n   ```\n\n1. List the files affected by the merge conflict. In this example, the file _styleguide.md_ has a merge conflict.', '## Resolving merge conflicts\n\nResolving a merge conflict means choosing the final content that should appear after the branches are merged. The right tool depends on the type of conflict.\n\n* Simple line conflicts can often be resolved on . See .\n* More complex conflicts must be resolved in a local clone and pushed back to the pull request branch. See .\n* If you have access to  and it is enabled for the repository,  can help resolve conflicts from the merge box. See .\n\nOn the command line, Git tells you when a merge cannot finish automatically. You cannot push the merged result until you resolve the conflict and commit the resolution.', '# Resolving a merge conflict on GitHub\n\nYou can resolve simple competing line change conflicts on . For other conflicts, use the command line. See .\n\nIf  is enabled for the repository, you can click **Fix with ** in the merge box to have  resolve conflicts automatically. See .\n\nIf a site administrator disables the merge conflict editor for pull requests between repositories, resolve merge conflicts on the command line.\n\n> [!WARNING]\n> Resolving conflicts on  merges the entire base branch into the head branch. If the head branch is the default or protected branch, you may be prompted to create a new head branch. See .\n\n1. In the ""Pull Requests"" list, click the pull request with a merge conflict that you want to resolve.\n1. Near the bottom of your pull request, click **Resolve conflicts**.', '# Merge conflicts\n\nGit can often resolve differences between branches and merge them automatically. Usually, changes are on different lines or in different files, so Git can merge them without help. Sometimes, competing changes need your help. Merge conflicts often happen when people make different changes to the same line of the same file, or when one person edits a file and another person deletes the same file.\n\nMerge conflicts block merging because Git cannot safely choose which version of the conflicting content to keep. You must resolve all merge conflicts before you can merge a pull request on . If your pull request has a merge conflict between the compare branch and base branch, the **Merge pull request** button is deactivated until the conflicts are resolved.']","**Resolución de un conflicto de merge por cambios en las mismas líneas (línea de comandos)**  
+
+1. **Abrir la terminal** y situarse en el repositorio con el conflicto.  
+   ```bash
+   cd <ruta‑del‑repositorio>
+   ```  
+
+2. **Identificar los archivos en conflicto**. Git los marca como *unmerged*:
+   ```bash
+   git status
+   ```
+   Los archivos aparecerán bajo *both modified*.
+
+3. **Editar cada archivo en conflicto**.  
+   - Busca los marcadores `<<<<<<<`, `=======` y `>>>>>>>`.  
+   - Elige la versión que deseas conservar (puede ser la de tu rama, la de la rama remota o una combinación).  
+   - Elimina los marcadores y guarda el archivo.
+
+4. **Marcar el conflicto como resuelto** añadiendo los archivos al *staging area*:
+   ```bash
+   git add <archivo‑en‑conflicto>
+   ```
+
+5. **Crear el commit de resolución** (Git abre el editor con un mensaje predeterminado, o puedes especificarlo):
+   ```bash
+   git commit   # o git commit -m ""Resuelto conflicto de merge en <archivo>""
+   ```
+
+6. **Continuar con el flujo de trabajo** (push, merge, etc.):
+   ```bash
+   git push   # si estabas trabajando en una rama remota
+   ```
+
+> Fuente: «Resolving a merge conflict using the command line», merge‑and‑close‑pull‑requests_resolving‑a‑merge‑conflict‑using‑the‑command‑line.md, pág. 1.","Abre la terminal o Git Bash y entra al repositorio local. Usa `git status` para ver los archivos con conflicto, ábrelos en un editor y busca el marcador `<<<<<<<`. Decide qué cambios conservar y elimina los marcadores. Después ejecuta `git add .` y confirma con `git commit -m` y un mensaje.",0.13333333333333333,0.9158528409263313,0.999999999975,0.25
+9,"Una rama borró un archivo que otra rama editó, ¿cómo resuelvo ese conflicto?","['1. If more than one file has a conflict, select the next file you want to edit on the left side of the page under ""conflicting files"" and repeat steps four through seven until you\'ve resolved all merge conflicts in your pull request.\n1. After you\'ve resolved all your merge conflicts, click **Commit merge**. This merges the entire base branch into your head branch.\n\n   !Screenshot of the editor to resolve a merge conflict in a pull request. The ""Commit merge"" button is outlined in dark orange.\n\n1. If prompted, review the branch that you are committing to. You can update the head branch or, if available, create a new branch for the pull request. If the head branch is protected, you must create a new branch.', '1. List the files affected by the merge conflict. In this example, the file `README.md` has a merge conflict.\n\n   ```shell\n   $ git status\n   > # On branch main\n   > # Your branch and \'origin/main\' have diverged,\n   > # and have 1 and 2 different commits each, respectively.\n   > #  (use ""git pull"" to merge the remote branch into yours)\n   > # You have unmerged paths.\n   > #  (fix conflicts and run ""git commit"")\n   > #\n   > # Unmerged paths:\n   > #  (use ""git add/rm <file>..."" as appropriate to mark resolution)\n   > #\n   > #\tdeleted by us:   README.md\n   > #\n   > # no changes added to commit (use ""git add"" and/or ""git commit -a"")\n   ```', '# Resolving a merge conflict using the command line\n\nMerge conflicts happen when competing changes are made to the same line of a file, or when one person edits a file and another person deletes the same file. See .\n\n> [!TIP]\n> You can use the conflict editor on  to resolve competing line change merge conflicts between branches that are part of a pull request. See .\n\n## Competing line change merge conflicts\n\nWhen competing changes affect the same lines, choose which changes to keep, then commit the resolution.\n\n1. Open your terminal or Git Bash.\n1. Navigate into the local Git repository that has the merge conflict.\n\n   ```shell\n   cd REPOSITORY-NAME\n   ```\n\n1. List the files affected by the merge conflict. In this example, the file _styleguide.md_ has a merge conflict.', '## Resolving merge conflicts\n\nResolving a merge conflict means choosing the final content that should appear after the branches are merged. The right tool depends on the type of conflict.\n\n* Simple line conflicts can often be resolved on . See .\n* More complex conflicts must be resolved in a local clone and pushed back to the pull request branch. See .\n* If you have access to  and it is enabled for the repository,  can help resolve conflicts from the merge box. See .\n\nOn the command line, Git tells you when a merge cannot finish automatically. You cannot push the merged result until you resolve the conflict and commit the resolution.']","**Resolución del conflicto “archivo borrado en una rama y editado en otra”**
+
+1. **Identifica el conflicto**  
+   ```bash
+   git status
+   ```  
+   Verás una línea similar a:  
+   `deleted by us:   <archivo>` ← indica que la rama actual borró el archivo mientras la otra lo modificó.  
+   *Fuente: merge-and-close-pull-requests_resolving-a-merge-conflict-using-the-command-line.md, pág. 1*
+
+2. **Decide qué versión conservar**  
+   - **Mantener la eliminación** → elimina el archivo del índice:  
+     ```bash
+     git rm <archivo>
+     ```  
+   - **Mantener la edición** → restaura el archivo y marca la resolución:  
+     ```bash
+     git checkout --theirs <archivo>   # o --ours según la rama que quieras conservar
+     git add <archivo>
+     ```
+
+3. **Marca el conflicto como resuelto**  
+   ```bash
+   git add <archivo>   # si no lo hiciste en el paso anterior
+   ```
+
+4. **Finaliza el merge**  
+   ```bash
+   git commit   # o git commit -m ""Resuelto conflicto: archivo borrado vs editado""
+   ```  
+   *Fuente: reference_merge-conflicts.md, pág. 1*
+
+5. **(Opcional) Resolución vía la interfaz de GitHub**  
+   - Abre el Pull Request con el conflicto.  
+   - En la sección *“conflicting files”* selecciona el archivo y usa el editor de conflictos para elegir “keep deletion” o “keep changes”.  
+   - Haz clic en **Commit merge** para completar.  
+   *Fuente: merge-and-close-pull-requests_resolving-a-merge-conflict-on-github.md, pág. 1*",Decide si conservar o eliminar el archivo. Para conservarlo ejecuta `git add README.md` (con el nombre del archivo); para eliminarlo ejecuta `git rm README.md`. Después confirma el cambio con `git commit` y un mensaje.,0.6153846153846154,0.6508474299507443,0.5833333333041666,1.0
+10,¿Cómo creo un pull request?,"['For more information on creating pull requests in , see .\n\n## Making changes to files in your pull request\n\nAfter you open your pull request, you can continue changing files by adding new commits to your head branch.\n\nYou can also make changes to files on the  website.\n\n1. On , navigate to a pull request in a repository.', '# Creating a pull request\n\nIf you want to create a new branch for your pull request but don\'t have write permissions to the repository, you can fork the repository first. See  and .\n\nWhen you create your pull request, you can specify which branch you want to merge your changes into. Pull requests can only be opened between two different branches.\n\n## Creating the pull request\n\n1. In the ""Branch"" menu, choose the branch that contains your commits.\n\n   !Screenshot of the branch dropdown menu on the main page of a repository.\n\n1. Use the _base_ branch dropdown menu to select the branch where you want to merge your changes. Then, use the _compare_ branch dropdown menu to choose the topic branch where you made your changes.', '1. Click **Create Pull Request**.  opens your default browser and takes you to GitHub.\n\n1. After you commit changes to your local copy of the repository, click the **Create Pull Request** icon.\n!Screenshot of the top of the ""Source Control"" side bar. The pull request icon is highlighted with a dark orange outline.\n1. Check that the local branch and repository you\'re merging from, and the remote branch and repository you\'re merging into, are correct. Then, give the pull request a title and a description.\n!Screenshot of the ""GitHub Pull Request"" side bar with a form for creating a pull request, including ""Title"" and ""Description"" fields.\n1. Click **Create**.\n\nFor more information on creating pull requests in , see .\n\n## Making changes to files in your pull request', 'After your pull request has been reviewed, it can be merged into the repository. See .\n\nTo create a pull request, use the `gh pr create` subcommand.\n\n```shell\ngh pr create\n```\n\nTo assign a pull request to an individual, use the `--assignee` or `-a` flags. You can use `@me` to self-assign the pull request.\n\n```shell\ngh pr create --assignee ""@octocat""\n```\n\nTo specify the branch into which you want the pull request merged, use the `--base` or `-B` flags. To specify the branch that contains commits for your pull request, use the `--head` or `-H` flags.\n\n```shell\ngh pr create --base my-base-branch --head my-changed-branch\n```\n\nTo include a title and body for the new pull request, use the `--title` and `--body` flags.']","**Cómo crear un pull request en GitHub**
+
+1. **Abre la página del repositorio** y, en el menú *Branch*, selecciona la rama que contiene tus commits (la rama de origen).  
+2. En el menú *Base* elige la rama donde quieres que se integren los cambios (por ejemplo, `main`).  
+3. Haz clic en **Create Pull Request**.  
+4. Completa el formulario: escribe un título descriptivo y, opcionalmente, una descripción que explique los cambios.  
+5. Pulsa **Create** para abrir el pull request.  
+
+> Fuente: *create-pull-requests_creating-a-pull-request.md*, pág. 1.","Sube tus cambios a una rama del repositorio, elige la rama base y la rama con tus cambios, escribe un título y una descripción y haz clic en Create Pull Request.",0.875,0.7882356939774515,0.6388888888675925,1.0
+11,¿Qué permiso necesito para pedir una revisión de un pull request?,"['# Requesting a pull request review\n\nTo request a review, you need write access to the repository. You can request a review from a person or team with read access to the repository, and they  receive a notification. For complete details on permissions for requesting reviews, see .\n\n## Requesting reviews from collaborators and organization members\n\nSuggested reviewers are based on git blame data. After someone reviews your pull request and you make changes, you can request another review from the same reviewer.\n\n> [!WARNING]\n> \n\n1. In the list of pull requests, click the pull request that you want a specific person or team to review.\n1. To request a review from a suggested person under **Reviewers**, next to their username, click **Request**.', '# Reverting a pull request\n\n## About reverting a pull request\n\nReverting a merged pull request creates a new pull request that reverts the original merge commit. You must have write permissions in the repository.\n\n## Reverting a pull request\n\n> [!NOTE]\n> You may need to revert individual commits if reverting the pull request causes merge conflicts or if the original pull request was not merged on . See Git revert in the Git documentation.\n\n1. In the ""Pull Requests"" list, click the pull request you want to revert.\n1. Near the bottom of the pull request, click **Revert**. If the **Revert** option isn\'t displayed, you need to ask the repository administrator for write permissions.\n\n   !Screenshot of a pull request\'s timeline. The ""Revert"" button is outlined in dark orange.', '1. Click **Create Pull Request**.  opens your default browser and takes you to GitHub.\n\n1. After you commit changes to your local copy of the repository, click the **Create Pull Request** icon.\n!Screenshot of the top of the ""Source Control"" side bar. The pull request icon is highlighted with a dark orange outline.\n1. Check that the local branch and repository you\'re merging from, and the remote branch and repository you\'re merging into, are correct. Then, give the pull request a title and a description.\n!Screenshot of the ""GitHub Pull Request"" side bar with a form for creating a pull request, including ""Title"" and ""Description"" fields.\n1. Click **Create**.\n\nFor more information on creating pull requests in , see .\n\n## Making changes to files in your pull request', 'No one can merge the pull request until you mark the pull request as ready for review again. People who are already subscribed to notifications for the pull request will not be unsubscribed when you convert the pull request to a draft.\n\n1. In the ""Pull requests"" list, click the pull request you want to convert to a draft.\n1. In the right sidebar, under ""Reviewers,"" click **Convert to draft**.\n\n   !Screenshot of the ""Reviewers"" section in the right sidebar of a pull request. The ""Convert to draft"" link is outlined in dark orange.\n\n1. Click **Convert to draft**.\n\n## Further reading\n\n*']","**Según la base de conocimientos**
+
+Para solicitar una revisión de un pull request necesitas **permiso de escritura (write access) en el repositorio**. Con ese nivel de permiso puedes pedir una revisión a cualquier persona o equipo que tenga al menos acceso de lectura al repositorio.  
+
+*Fuente: create‑pull‑requests_requesting-a-pull-request-review.md, pág. 1*",Necesitas acceso de escritura (write) al repositorio. Puedes solicitar la revisión a una persona o a un equipo.,1.0,0.9444386690658927,0.99999999995,1.0
+12,¿Qué pasa si cambio la rama base de mi pull request?,"['For more information on creating pull requests in , see .\n\n## Making changes to files in your pull request\n\nAfter you open your pull request, you can continue changing files by adding new commits to your head branch.\n\nYou can also make changes to files on the  website.\n\n1. On , navigate to a pull request in a repository.', 'Pull requests use the `--no-ff` option, except squashed or rebased pull requests, which use fast-forward merging.\n\nIf you don\'t want to merge the changes, you can close the pull request.\n\n## Merging a pull request\n\n1. In the ""Pull Requests"" list, click the pull request you want to merge.\n1. Scroll down to the bottom of the pull request. Depending on the merge options enabled for your repository, choose a merge method:\n\n    * Merge all commits into the base branch by clicking **Merge pull request**. If the option is not shown, click the merge dropdown menu and select **Create a merge commit**.\n\n      !Screenshot of the merge options for a pull request. The arrow to expand the dropdown is outlined in dark orange.', '# Closing a pull request\n\n> [!TIP]\n> If you opened a pull request with the wrong base branch, instead of closing it and opening a new one, you can change the base branch. See .\n\n1. In the ""Pull Requests"" list, click the pull request you want to close.\n1. At the bottom of the pull request, below the comment box, click **Close pull request**.\n1. Optionally, delete the branch. This keeps the list of branches in your repository tidy.', '# Creating a pull request\n\nIf you want to create a new branch for your pull request but don\'t have write permissions to the repository, you can fork the repository first. See  and .\n\nWhen you create your pull request, you can specify which branch you want to merge your changes into. Pull requests can only be opened between two different branches.\n\n## Creating the pull request\n\n1. In the ""Branch"" menu, choose the branch that contains your commits.\n\n   !Screenshot of the branch dropdown menu on the main page of a repository.\n\n1. Use the _base_ branch dropdown menu to select the branch where you want to merge your changes. Then, use the _compare_ branch dropdown menu to choose the topic branch where you made your changes.']","**Cambiar la rama base de un pull request** hace que el PR se vuelva a comparar con la rama que selecciones en lugar de la original.  
+
+- El PR seguirá mostrando los mismos commits de tu rama de trabajo, pero el *diff* se recalcula respecto a la nueva rama base.  
+- Si la nueva rama base tiene diferencias con la anterior, pueden aparecer **conflictos de merge** que tendrás que resolver antes de poder fusionar.  
+- Es una alternativa a cerrar el PR y abrir uno nuevo cuando la rama base elegida inicialmente era incorrecta.  
+
+**Cómo cambiarla** (según la documentación oficial):  
+
+1. En la lista de *Pull Requests*, abre el PR que deseas modificar.  
+2. En la parte inferior del PR, junto al botón **Close pull request**, haz clic en **Edit** (icono de lápiz) al lado del selector de *base branch*.  
+3. Selecciona la rama que quieres usar como nueva base y confirma el cambio.  
+
+> «If you opened a pull request with the wrong base branch, instead of closing it and opening a new one, you can change the base branch.»  
+> Fuente: *merge-and-close-pull-requests_closing-a-pull-request.md*, pág. 1.","Algunos commits pueden desaparecer de la línea de tiempo del pull request y los comentarios de revisión pueden quedar desactualizados, porque la línea de código que comentaban puede dejar de formar parte de los cambios.",0.2,0.819742658196388,0.0,0.0
+13,¿Cómo paso un pull request de borrador a listo para revisión?,"['# Requesting a pull request review\n\nTo request a review, you need write access to the repository. You can request a review from a person or team with read access to the repository, and they  receive a notification. For complete details on permissions for requesting reviews, see .\n\n## Requesting reviews from collaborators and organization members\n\nSuggested reviewers are based on git blame data. After someone reviews your pull request and you make changes, you can request another review from the same reviewer.\n\n> [!WARNING]\n> \n\n1. In the list of pull requests, click the pull request that you want a specific person or team to review.\n1. To request a review from a suggested person under **Reviewers**, next to their username, click **Request**.', 'No one can merge the pull request until you mark the pull request as ready for review again. People who are already subscribed to notifications for the pull request will not be unsubscribed when you convert the pull request to a draft.\n\n1. In the ""Pull requests"" list, click the pull request you want to convert to a draft.\n1. In the right sidebar, under ""Reviewers,"" click **Convert to draft**.\n\n   !Screenshot of the ""Reviewers"" section in the right sidebar of a pull request. The ""Convert to draft"" link is outlined in dark orange.\n\n1. Click **Convert to draft**.\n\n## Further reading\n\n*', '# Changing the stage of a pull request\n\n## Marking a pull request as ready for review\n\n> [!TIP]\n> You can also mark a pull request as ready for review using the . See `gh pr ready` in the  documentation.\n\n1. In the ""Pull requests"" list, click the pull request you want to mark as ready for review.\n1. In the merge box, click **Ready for review**.\n\n   !Screenshot of the merge box in a pull request. The ""Ready for review"" button is outlined in dark orange.\n\n## Converting a pull request to a draft\n\nYou can convert a pull request to a draft at any time. For example, if you accidentally opened a pull request instead of a draft, or if you\'ve received feedback on your pull request that you need to address, you can convert the pull request to a draft to indicate further changes are needed.', '!Screenshot of the ""Reviewers"" section of a pull request\'s sidebar. To the right of @octocat, a ""Request"" link is outlined in dark orange.\n\n1. Optionally, to request a review from someone other than a suggested person, click **Reviewers**.\n\n   If you know the name of the person or team you want a review from, type the username of the person or the name of the team you\'re asking to review your changes. Click their team name or username to request a review.\n\n1. After your pull request is reviewed and you make the necessary changes, you can ask a reviewer to review your pull request again. Navigate to **Reviewers** in the right sidebar and click  next to the reviewer\'s name whose review you want.']","**Cómo marcar un pull request de borrador como listo para revisión**
+
+1. En la lista de *Pull requests*, haz clic en el pull request que está en modo borrador.  
+2. En la barra de fusión (merge box) del pull request, pulsa el botón **Ready for review**.  
+3. Confirma la acción si se te solicita.
+
+Con estos pasos el pull request deja de ser borrador y los revisores podrán revisarlo y, si tienen permiso, mezclarlo.
+
+*Fuente: «create‑pull‑requests_changing‑the‑stage‑of‑a‑pull‑request.md», pág. 1*",Abre el pull request y haz clic en el botón Ready for review para cambiar su estado de borrador a listo para revisión.,0.6666666666666666,0.8104048966196474,0.3333333333,1.0
+14,¿Cómo revierto un pull request que ya fue fusionado?,"['# Reverting a pull request\n\n## About reverting a pull request\n\nReverting a merged pull request creates a new pull request that reverts the original merge commit. You must have write permissions in the repository.\n\n## Reverting a pull request\n\n> [!NOTE]\n> You may need to revert individual commits if reverting the pull request causes merge conflicts or if the original pull request was not merged on . See Git revert in the Git documentation.\n\n1. In the ""Pull Requests"" list, click the pull request you want to revert.\n1. Near the bottom of the pull request, click **Revert**. If the **Revert** option isn\'t displayed, you need to ask the repository administrator for write permissions.\n\n   !Screenshot of a pull request\'s timeline. The ""Revert"" button is outlined in dark orange.', 'Pull requests use the `--no-ff` option, except squashed or rebased pull requests, which use fast-forward merging.\n\nIf you don\'t want to merge the changes, you can close the pull request.\n\n## Merging a pull request\n\n1. In the ""Pull Requests"" list, click the pull request you want to merge.\n1. Scroll down to the bottom of the pull request. Depending on the merge options enabled for your repository, choose a merge method:\n\n    * Merge all commits into the base branch by clicking **Merge pull request**. If the option is not shown, click the merge dropdown menu and select **Create a merge commit**.\n\n      !Screenshot of the merge options for a pull request. The arrow to expand the dropdown is outlined in dark orange.', 'Choose this strategy when your team wants a linear history and the pull request commits are already organized clearly. If  cannot safely rebase the pull request automatically, you can rebase locally, resolve conflicts, and push the updated branch. See  and .\n\n## Indirect merges\n\nA pull request can be marked as merged if its head branch commits become reachable from the base branch outside that pull request. This can happen when the same commits are merged through another pull request or pushed directly to the default branch.\n\nIndirect merges are uncommon, but they can affect automation and branch protection expectations. Pull requests merged indirectly are marked as `merged` even if branch protection rules on that pull request were not satisfied.\n\n## Further reading\n\n* \n*', '# Pull request merges\n\nPull requests can be merged in different ways. The best strategy depends on how your team wants the repository history to look and how much detail you want to preserve from the pull request branch.']","**Cómo revertir un pull request que ya fue fusionado**
+
+1. Abre la lista de *Pull Requests* y selecciona el pull request que deseas revertir.  
+2. En la parte inferior del pull request, haz clic en **Revert**.  
+3. GitHub creará automáticamente un nuevo pull request que contiene un *commit* de reversión del merge original.  
+4. Revisa y fusiona ese nuevo pull request para aplicar la reversión.  
+
+> **Nota:** Necesitas permisos de escritura en el repositorio; si el botón **Revert** no aparece, solicita al administrador que te otorgue esos permisos.  
+
+**Fuente:** «merge-and-close-pull-requests_reverting-a-pull-request.md», pág. 1.","En el pull request fusionado haz clic en el botón Revert. GitHub crea un nuevo pull request que deshace los cambios del original, y lo fusionas como cualquier otro.",0.6666666666666666,0.9147422925690648,0.9999999999,1.0

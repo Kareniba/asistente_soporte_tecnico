@@ -1,6 +1,6 @@
 # GitBot — Asistente experto de soporte técnico de Git/GitHub (RAG)
 
-Proyecto de **Desarrollo de Aplicaciones con IA** · Avance 2: flujo RAG completo, evaluación con Ragas y despliegue conversacional.
+Proyecto de **Desarrollo de Aplicaciones con IA** · Avance 3: el RAG del Avance 2 convertido en un **agente con herramientas** y búsqueda web controlada (el Avance 2 sigue disponible en `src/rag/`).
 
 
 
@@ -40,6 +40,66 @@ Conjunto de 18 preguntas (`evaluacion/preguntas_eval.json`): 14 dentro del corpu
 
 El análisis completo y la iteración de mejora están en el PDF de entrega.
 
+## Avance 3: agente con herramientas
+
+El LLM (`openai/gpt-oss-120b` en Groq, con *tool calling*) decide si llama una tool; el programa la ejecuta y le devuelve el resultado. No se usa framework: el bucle está escrito con el SDK de Groq (`src/agente/agente.py`), de modo que cada límite y cada decisión se ven en el código.
+
+```
+pregunta → LLM → (tool_call) → programa ejecuta la tool → resultado → LLM → ... → respuesta
+```
+
+### Tools y límites (definidos en el código, `src/agente/herramientas.py`)
+
+| Tool | Tipo | Qué hace | Límites en el código |
+|---|---|---|---|
+| `buscar_en_base(consulta)` | búsqueda | Recupera fragmentos de la base vectorial local (la recuperación del Avance 2). | Máx. 4 fragmentos por llamada; cada fragmento ≤ 800 caracteres; descarta fragmentos con distancia > 0.6; consulta ≤ 300 caracteres. Cada fragmento trae documento y página. |
+| `analizar_conflicto_merge(texto_archivo)` | tarea del dominio | Analiza un archivo pegado con marcadores `<<<<<<<` / `=======` / `>>>>>>>`: cuenta conflictos, ramas de cada lado y líneas de cada versión. | Texto ≤ 6000 caracteres; detalla máx. 5 conflictos y 12 líneas por lado. |
+| `validar_nombre_rama(nombre)` | tarea del dominio | Aplica las reglas de `git check-ref-format` y lista las que se incumplen (espacios, `..`, `~^:?*[\\`, `.lock`, etc.). | Nombre ≤ 250 caracteres. |
+| `buscar_en_web(consulta)` | web | Busca con Tavily solo en sitios oficiales. | Máx. 3 resultados; solo título, URL y extracto ≤ 300 caracteres; dominios fijos en el código; se bloquea si antes no se consultó la base. |
+
+Las dos tools de tarea existen porque el LLM no debe resolverlas «de memoria»: contar conflictos en un texto y validar un nombre contra reglas exactas son cálculos deterministas.
+
+### Bucle, límites y registro
+
+- **Límite de iteraciones:** máximo 5 llamadas al LLM por pregunta (`AGENTE_MAX_ITERACIONES`); en la última no se ofrecen tools, así que el modelo está obligado a responder.
+- **Saludos y conversación casual** se responden sin tools; **preguntas compuestas** pueden llamar `buscar_en_base` varias veces.
+- **Prompt del sistema** (`src/agente/prompt_agente.py`): indica cuándo usar cada tool, responder solo con lo que devuelven, citar la fuente y mantiene la respuesta exacta cuando la información no está disponible.
+- **Registro de uso:** cada pregunta agrega una línea JSON a `logs/uso_tools.jsonl` con las tools llamadas y sus argumentos, el número de llamadas al LLM, los tokens y el tiempo.
+
+### Política de búsqueda web («primero la base»)
+
+La base de conocimientos **nunca sale del sistema**; solo la consulta que escribe el agente viaja al buscador (Tavily).
+
+- **Cuándo se usa:** solo si `buscar_en_base` no tiene la respuesta **y** la pregunta trata de información pública o actual de Git/GitHub (una versión reciente, una definición general, el estado del servicio). Esta regla está en el docstring de la tool, en el System Prompt y, además, se hace cumplir en código: si el agente intenta buscar en la web sin haber consultado la base, la llamada se bloquea.
+- **Sitios permitidos** (fijos en `WEB_SITIOS_PERMITIDOS`; el LLM no puede cambiarlos):
+
+| Sitio | Por qué |
+|---|---|
+| `docs.github.com` | Documentación oficial de GitHub (la misma fuente del corpus). |
+| `git-scm.com` | Sitio oficial de Git: documentación de comandos y versiones. |
+| `github.blog` | Blog oficial: anuncios y cambios recientes de la plataforma. |
+| `githubstatus.com` | Estado oficial del servicio (información actual). |
+
+- **Resultados acotados:** máximo 3, cada uno con título, URL y extracto corto, marcados con origen «web». Una segunda barrera descarta cualquier URL cuyo dominio no esté en la lista.
+- **Respuesta separada por origen:** lo de la base se cita como `Fuente: documento, pág. N` y lo de la web como `[web: URL]`; la interfaz los muestra en secciones distintas.
+- **Privacidad:** el prompt indica escribir consultas generales, sin datos del usuario ni contenido de la base.
+
+### Evaluación del agente (se ejecuta en tu equipo)
+
+```bash
+pip install -r requirements-eval.txt
+python -m evaluacion.evaluar_agente      # Ragas: agente vs. pipeline del Avance 2 (tabla en resultados/comparacion_ragas.md)
+python -m evaluacion.evaluar_casos       # 8 casos de comportamiento (esperado escrito en casos_comportamiento.json)
+python -m evaluacion.comparar_costo      # llamadas al LLM, tokens y tiempo: pipeline fijo vs. agente
+python -m pytest tests -q                # pruebas sin red de las tools y del bucle
+```
+
+Probar una tool sin LLM (`.invoke()`):
+
+```bash
+python -c "from src.agente.herramientas import HERRAMIENTAS as H; print(H['buscar_en_base'].invoke({'consulta': 'Permission denied (publickey)'}))"
+```
+
 ## Instalación y ejecución local
 
 ```bash
@@ -54,7 +114,10 @@ Crea un archivo `.env` en la raíz (no se sube al repositorio):
 
 ```
 GROQ_API_KEY=tu_clave_de_groq
+TAVILY_API_KEY=tu_clave_de_tavily   # búsqueda web (plan gratuito en tavily.com)
 ```
+
+(Hay un ejemplo en `.env.example`. Sin `TAVILY_API_KEY` el agente funciona, pero la tool web responde que no está configurada.)
 
 El índice ya viene en `chroma_db/`. Para reconstruirlo desde `data/docs/`:
 
@@ -65,8 +128,9 @@ python -m src.rag.vectorstore
 Probar el pipeline por consola y lanzar el chat:
 
 ```bash
-python -m src.rag.pipeline
-python app.py            # http://127.0.0.1:5000
+python -m src.rag.pipeline     # pipeline fijo del Avance 2
+python -m src.agente.agente "Hola"   # agente por consola (muestra tools, llamadas y tokens)
+python app.py                  # chat con el agente: http://127.0.0.1:5000
 ```
 
 ## Evaluación (solo en tu equipo)
@@ -86,20 +150,35 @@ Los resultados quedan en `evaluacion/resultados/`. Ragas no se instala en el des
 3. Configuración:
    - **Build command:** `pip install -r requirements.txt`
    - **Start command:** `gunicorn app:app --workers 1 --timeout 120`
-   - **Environment:** `GROQ_API_KEY` = la clave de Groq y `PYTHON_VERSION` = `3.12.3` (o la versión estable que se use).
-4. La clave nunca se escribe en el código ni en el repositorio: solo en las variables de entorno de Render.
+   - **Environment:** `GROQ_API_KEY` = la clave de Groq, `TAVILY_API_KEY` = la clave de Tavily y `PYTHON_VERSION` = `3.12.3` (o la versión estable que se use).
+4. Las claves nunca se escriben en el código ni en el repositorio: solo en las variables de entorno de Render.
+5. URL pública: `COMPLETAR_URL_DESPLIEGUE`
 
 Nota: en el plan gratuito el servicio se duerme tras unos minutos sin uso y la primera visita tarda en responder (carga el modelo de embeddings).
+
+## Despliegue en Streamlit Community Cloud
+
+1. En Streamlit Cloud: **New app**, repositorio del proyecto, archivo principal `streamlit_app.py`.
+2. En **Settings → Secrets** agregar (nunca en el repositorio):
+   ```
+   GROQ_API_KEY = "tu_clave_de_groq"
+   TAVILY_API_KEY = "tu_clave_de_tavily"
+   ```
+3. La interfaz muestra, en cada respuesta, las tools usadas con sus argumentos y las fuentes separadas entre la base de conocimientos y la web.
+4. URL pública: `COMPLETAR_URL_DESPLIEGUE`
 
 ## Estructura
 
 ```
 app.py                 # servidor Flask del chat
 templates/, static/    # interfaz web
+src/agente/            # agente: tools, bucle, prompt y registro de uso (Avance 3)
 src/rag/               # pipeline RAG (ingesta, chunking, embeddings, índice, recuperación, prompt, generación)
 data/docs/             # corpus
 chroma_db/             # índice vectorial persistente
-evaluacion/            # preguntas, script de Ragas y resultados
+evaluacion/            # preguntas, Ragas (pipeline y agente), casos de comportamiento, costo y resultados
+tests/                 # pruebas sin red de las tools y del bucle
+logs/                  # registro de uso de tools (se genera al ejecutar; no se sube)
 docs/                  # diagrama del flujo
 ```
 

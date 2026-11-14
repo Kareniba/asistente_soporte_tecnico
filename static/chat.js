@@ -11,7 +11,21 @@ let history = [];
 let sending = false;
 
 
-function addMessage(role, content, sources = []) {
+function buildDetails(summaryText, className) {
+    const details = document.createElement("details");
+    details.className = className;
+    const summary = document.createElement("summary");
+    summary.textContent = summaryText;
+    details.appendChild(summary);
+    return details;
+}
+
+
+function addMessage(role, content, extras = {}) {
+    const tools = Array.isArray(extras.tools) ? extras.tools : [];
+    const sourcesBase = Array.isArray(extras.sourcesBase) ? extras.sourcesBase : [];
+    const sourcesWeb = Array.isArray(extras.sourcesWeb) ? extras.sourcesWeb : [];
+
     const article = document.createElement("article");
     article.className = role === "user"
         ? "message user-message"
@@ -27,54 +41,94 @@ function addMessage(role, content, sources = []) {
 
     article.append(label, text);
 
-    if (role === "assistant" && Array.isArray(sources) && sources.length > 0) {
-        const sourceSection = document.createElement("section");
-        sourceSection.className = "sources";
-
-        const heading = document.createElement("h3");
-        heading.textContent = "Fuentes consultadas";
-        sourceSection.appendChild(heading);
-
-        sources.forEach((source) => {
+    if (role === "assistant") {
+        // Tools usadas y argumentos (solo en respuestas del agente, no en bienvenida/errores)
+        if (Array.isArray(extras.tools)) {
+        const toolsBox = buildDetails(
+            tools.length > 0
+                ? `Tools usadas (${tools.length})`
+                : "Tools usadas: ninguna",
+            "tools-used"
+        );
+        tools.forEach((tool) => {
             const item = document.createElement("div");
-            item.className = "source-item";
+            item.className = "tool-item";
 
-            const documentName = document.createElement("div");
-            documentName.className = "source-document";
+            const name = document.createElement("div");
+            name.className = "tool-name";
+            name.textContent = tool.name;
 
-            const snippet = document.createElement("p");
-            snippet.className = "source-snippet";
+            const args = document.createElement("code");
+            args.className = "tool-args";
+            args.textContent = JSON.stringify(tool.args);
 
-            if (typeof source === "string") {
-                documentName.textContent = source;
-                snippet.textContent = "";
-            } else {
-                documentName.textContent =
-                    source.document ||
-                    source.filename ||
-                    source.source ||
-                    source.title ||
-                    "Documento";
+            const summary = document.createElement("p");
+            summary.className = "source-snippet";
+            summary.textContent = tool.summary || "";
 
-                snippet.textContent =
-                    source.snippet ||
-                    source.fragment ||
-                    source.text ||
-                    source.content ||
-                    source.chunk ||
-                    "";
-            }
-
-            item.appendChild(documentName);
-
-            if (snippet.textContent) {
-                item.appendChild(snippet);
-            }
-
-            sourceSection.appendChild(item);
+            item.append(name, args, summary);
+            toolsBox.appendChild(item);
         });
+        article.appendChild(toolsBox);
+        }
 
-        article.appendChild(sourceSection);
+        // Fuentes de la base de conocimientos
+        if (sourcesBase.length > 0) {
+            const section = document.createElement("section");
+            section.className = "sources";
+            const heading = document.createElement("h3");
+            heading.textContent = "Fuentes de la base de conocimientos";
+            section.appendChild(heading);
+
+            sourcesBase.forEach((source) => {
+                const item = document.createElement("div");
+                item.className = "source-item";
+
+                const documentName = document.createElement("div");
+                documentName.className = "source-document";
+                documentName.textContent =
+                    `${source.document || "Documento"} (pág. ${source.page ?? "?"})`;
+
+                item.appendChild(documentName);
+                if (source.snippet) {
+                    const snippet = document.createElement("p");
+                    snippet.className = "source-snippet";
+                    snippet.textContent = source.snippet;
+                    item.appendChild(snippet);
+                }
+                section.appendChild(item);
+            });
+            article.appendChild(section);
+        }
+
+        // Resultados de la web (se muestran aparte, marcados como web)
+        if (sourcesWeb.length > 0) {
+            const section = document.createElement("section");
+            section.className = "sources sources-web";
+            const heading = document.createElement("h3");
+            heading.textContent = "Resultados de la web";
+            section.appendChild(heading);
+
+            sourcesWeb.forEach((source) => {
+                const item = document.createElement("div");
+                item.className = "source-item";
+
+                const link = document.createElement("a");
+                link.className = "source-document";
+                link.href = source.url;
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.textContent = `[web] ${source.title || source.url}`;
+
+                const url = document.createElement("p");
+                url.className = "source-snippet";
+                url.textContent = source.url;
+
+                item.append(link, url);
+                section.appendChild(item);
+            });
+            article.appendChild(section);
+        }
     }
 
     messagesContainer.appendChild(article);
@@ -134,9 +188,11 @@ form.addEventListener("submit", async (event) => {
             ? data.answer
             : "No se recibió una respuesta válida del servidor.";
 
-        const sources = Array.isArray(data.sources) ? data.sources : [];
-
-        addMessage("assistant", answer, sources);
+        addMessage("assistant", answer, {
+            tools: data.tools,
+            sourcesBase: data.sources_base,
+            sourcesWeb: data.sources_web
+        });
 
         // Guardamos ambos mensajes para las próximas preguntas.
         history.push(

@@ -3,6 +3,7 @@ gunicorn>=23.0,<24.0
 chromadb
 fastembed
 groq
+httpx
 pypdf
 beautifulsoup4
 python-docx

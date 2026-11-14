@@ -9,38 +9,42 @@ MAX_QUESTION_LENGTH = 2000
 
 def generate_answer(question, history):
     """
-    Conecta Flask con el pipeline RAG existente.
-    No modifica src/rag/pipeline.py.
+    Conecta Flask con el agente (Avance 3): el LLM decide qué tools usar.
+    Devuelve la respuesta, las tools usadas con sus argumentos y las fuentes
+    separadas por origen (base de conocimientos vs. web).
     """
 
     # Importación dentro de la función para no cargar el RAG
     # hasta que llegue la primera pregunta.
-    from src.rag.pipeline import responder
+    from src.agente.agente import responder_agente
 
-    result = responder(
-        pregunta=question,
-        historial=history
-    )
-
-    # Adaptamos los nombres que devuelve el RAG a los que
-    # utiliza nuestra interfaz JavaScript.
-    sources = []
-
-    for source in result.get("fuentes", []):
-        sources.append({
-            "document": source.get("documento", "Documento"),
-            "snippet": source.get("fragmento", ""),
-            "page": source.get("pagina")
-        })
+    result = responder_agente(question, history)
 
     return {
-        "answer": result.get(
-            "respuesta",
-            "No se pudo generar una respuesta."
-        ),
-        "sources": sources,
+        "answer": result.get("respuesta", "No se pudo generar una respuesta."),
+        "tools": [
+            {
+                "name": t["nombre"],
+                "args": t["args"],
+                "summary": t["resumen"],
+            }
+            for t in result.get("tools", [])
+        ],
+        "sources_base": [
+            {
+                "document": s["documento"],
+                "page": s["pagina"],
+                "snippet": s["fragmento"],
+            }
+            for s in result.get("fuentes_base", [])
+        ],
+        "sources_web": [
+            {"title": w["titulo"], "url": w["url"], "snippet": w["extracto"]}
+            for w in result.get("fuentes_web", [])
+        ],
+        "llm_calls": result.get("llamadas_llm"),
+        "seconds": result.get("tiempo_s"),
         "en_contexto": result.get("en_contexto", False),
-        "query": result.get("consulta", question)
     }
 
 
@@ -98,12 +102,12 @@ def chat():
         return jsonify(result)
 
     except Exception:
-        app.logger.exception("Error al procesar la pregunta con el RAG")
+        app.logger.exception("Error al procesar la pregunta con el agente")
 
         return jsonify({
             "error": (
                 "No pude procesar tu pregunta. "
-                "Revisa la configuración del RAG y sus dependencias."
+                "Revisa la configuración del agente y sus dependencias."
             )
         }), 500
 
