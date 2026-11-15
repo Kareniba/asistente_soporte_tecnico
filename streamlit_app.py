@@ -1,8 +1,8 @@
 # streamlit_app.py
+import sys
 try:  # chromadb necesita un sqlite más nuevo en Streamlit Cloud
-    __import__("pysqlite3")
-    import sys
-    sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+    import pysqlite3
+    sys.modules["sqlite3"] = pysqlite3
 except ImportError:
     pass
 
