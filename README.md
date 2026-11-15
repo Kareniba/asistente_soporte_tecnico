@@ -2,6 +2,8 @@
 
 Proyecto de **Desarrollo de Aplicaciones con IA** · Avance 3: el RAG del Avance 2 convertido en un **agente con herramientas** y búsqueda web controlada (el Avance 2 sigue disponible en `src/rag/`).
 
+**Aplicación desplegada:** https://asistentesoportetecnico-nkhdujgquqvskmidnujmfi.streamlit.app/
+
 
 
 ## ¿Qué hace?
@@ -30,15 +32,15 @@ Privacidad: el corpus y el índice vectorial se mantienen en el proyecto (carpet
 
 Conjunto de 18 preguntas (`evaluacion/preguntas_eval.json`): 14 dentro del corpus con respuesta de referencia y 4 fuera del corpus. Juez: `openai/gpt-oss-120b` en Groq. Las preguntas fuera del corpus se miden aparte con la tasa de rechazo.
 
-| Métrica | Baseline (`top_k=4`) | Iteración de mejora |
+| Métrica | Avance 2 (pipeline fijo, `top_k=4`) | Avance 3 (agente) |
 |---|---|---|
-| faithfulness | 0.885 | `PENDIENTE` |
-| answer_relevancy | 0.762 | `PENDIENTE` |
-| context_precision | 0.732 | `PENDIENTE` |
-| context_recall | 0.899 | `PENDIENTE` |
-| Rechazo fuera del corpus | 4/4 | `PENDIENTE` |
+| faithfulness | 0.885 | 0.593 |
+| answer_relevancy | 0.762 | 0.845 |
+| context_precision | 0.732 | 0.691 |
+| context_recall | 0.899 | 0.816 |
+| Rechazo fuera del corpus | 4/4 | 3/4 |
 
-El análisis completo y la iteración de mejora están en el PDF de entrega.
+Con el agente mejora la relevancia de la respuesta, pero baja la fidelidad al contexto: el modelo completa con conocimiento propio lo que los fragmentos no traen. El análisis completo, el costo y los casos de comportamiento están en el PDF de entrega.
 
 ## Avance 3: agente con herramientas
 
@@ -47,6 +49,10 @@ El LLM (`openai/gpt-oss-120b` en Groq, con *tool calling*) decide si llama una t
 ```
 pregunta → LLM → (tool_call) → programa ejecuta la tool → resultado → LLM → ... → respuesta
 ```
+
+![Arquitectura del agente](docs/arquitectura_agente.png)
+
+El diagrama se puede editar en `docs/arquitectura_agente.drawio` (draw.io).
 
 ### Tools y límites (definidos en el código, `src/agente/herramientas.py`)
 
@@ -152,9 +158,8 @@ Los resultados quedan en `evaluacion/resultados/`. Ragas no se instala en el des
    - **Start command:** `gunicorn app:app --workers 1 --timeout 120`
    - **Environment:** `GROQ_API_KEY` = la clave de Groq, `TAVILY_API_KEY` = la clave de Tavily y `PYTHON_VERSION` = `3.12.3` (o la versión estable que se use).
 4. Las claves nunca se escriben en el código ni en el repositorio: solo en las variables de entorno de Render.
-5. URL pública: `COMPLETAR_URL_DESPLIEGUE`
 
-Nota: en el plan gratuito el servicio se duerme tras unos minutos sin uso y la primera visita tarda en responder (carga el modelo de embeddings).
+Nota: el despliegue de la entrega es el de Streamlit (sección siguiente); Render queda documentado como alternativa. En el plan gratuito el servicio se duerme tras unos minutos sin uso y la primera visita tarda en responder (carga el modelo de embeddings).
 
 ## Despliegue en Streamlit Community Cloud
 
@@ -165,7 +170,8 @@ Nota: en el plan gratuito el servicio se duerme tras unos minutos sin uso y la p
    TAVILY_API_KEY = "tu_clave_de_tavily"
    ```
 3. La interfaz muestra, en cada respuesta, las tools usadas con sus argumentos y las fuentes separadas entre la base de conocimientos y la web.
-4. URL pública: `COMPLETAR_URL_DESPLIEGUE`
+4. La primera vez que arranca, la app reconstruye el índice vectorial en una carpeta temporal y descarga el modelo de embeddings, lo que tarda unos minutos.
+5. URL pública: https://asistentesoportetecnico-nkhdujgquqvskmidnujmfi.streamlit.app/
 
 ## Estructura
 
@@ -179,6 +185,6 @@ chroma_db/             # índice vectorial persistente
 evaluacion/            # preguntas, Ragas (pipeline y agente), casos de comportamiento, costo y resultados
 tests/                 # pruebas sin red de las tools y del bucle
 logs/                  # registro de uso de tools (se genera al ejecutar; no se sube)
-docs/                  # diagrama del flujo
+docs/                  # diagramas de arquitectura (PNG y draw.io)
 ```
 
