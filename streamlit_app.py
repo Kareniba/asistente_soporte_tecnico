@@ -8,6 +8,7 @@ except ImportError:
 
 import json
 import os
+import traceback
 
 import streamlit as st
 
@@ -20,6 +21,20 @@ for clave in ("GROQ_API_KEY", "TAVILY_API_KEY"):  # las claves salen de los Secr
 from src.agente.agente import responder_agente  # después de fijar las variables de entorno
 
 st.set_page_config(page_title="GitBot", page_icon="🤖")
+
+
+@st.cache_resource(show_spinner="Preparando la base de conocimientos (la primera vez tarda unos minutos)...")
+def preparar_base():
+    """Abre (o reconstruye) el índice y carga el modelo de embeddings UNA vez por arranque,
+    para que la primera pregunta no cargue con esa espera."""
+    from src.rag.embeddings import embed_consulta
+    from src.rag.vectorstore import get_coleccion
+    get_coleccion()
+    embed_consulta("calentamiento")
+    return True
+
+
+preparar_base()
 st.title("GitBot: soporte técnico de Git y GitHub")
 st.caption("Agente con herramientas: busca en la base de conocimientos, usa tareas del dominio y, solo si hace falta, la web oficial.")
 
@@ -64,8 +79,10 @@ if pregunta:
         with st.spinner("El agente está decidiendo qué herramientas usar..."):
             try:
                 r = responder_agente(pregunta, historial)
-            except Exception:
-                r = {"respuesta": "No pude procesar tu pregunta. Revisa las claves y la configuración del agente.",
+            except Exception as e:
+                traceback.print_exc()   # queda en los logs de la plataforma (Manage app)
+                r = {"respuesta": "No pude procesar tu pregunta. Revisa las claves y la configuración del agente. "
+                                  f"Detalle técnico: {type(e).__name__}: {str(e)[:200]}",
                      "tools": [], "fuentes_base": [], "fuentes_web": []}
         st.markdown(r["respuesta"])
         mensaje = {"role": "assistant", "content": r["respuesta"], "tools": r["tools"],
